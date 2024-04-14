@@ -1,5 +1,6 @@
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flasher_ui/src/screens/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,11 +30,21 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFF31531),
+        ),
+        scaffoldBackgroundColor: Colors.black, // Hintergrundfarbe
         visualDensity: VisualDensity.adaptivePlatformDensity,
         useMaterial3: true,
+        inputDecorationTheme: InputDecorationTheme(
+          contentPadding: EdgeInsets.symmetric(horizontal: 25), // Innenabstand anpassen
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+          )
+        )
       ),
-      home: const MyHomePage(),
+      //home: const MyHomePage(),
+      home: const LoginScreen(),
     );
   }
 }

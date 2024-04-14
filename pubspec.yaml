@@ -64,7 +64,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - logo/flashr_logo.png
+    - assets/logo/flashr_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
