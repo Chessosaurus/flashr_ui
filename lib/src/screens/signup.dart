@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class Signup extends StatelessWidget {
+class Signup extends StatefulWidget {
   const Signup({super.key});
+
+  @override
+  State<Signup> createState() => _SignupState();
+}
+
+class _SignupState extends State<Signup> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _signUp() async {
+    final response = await Supabase.instance.client.auth.signUp(
+      email: _emailController.text,
+      password: _passwordController.text,
+      data: {'username': _usernameController},
+    );
+    final Session? session = response.session;
+    final User? user = response.user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +77,7 @@ class Signup extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        // Aktion für den Sign-Up-Button hier einfügen
-                      },
+                      onPressed: _signUp,
                       child: Text('Sign Up'),
                     ),
                     SizedBox(height: 30),

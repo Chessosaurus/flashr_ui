@@ -1,10 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final _future = Supabase.instance.client.schema('persistence')
+      .from('User').select();
+  @override
   Widget build(BuildContext context) {
+/*    return Scaffold(
+      body: FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final user = snapshot.data!;
+          return ListView.builder(
+            itemCount: user.length,
+            itemBuilder: ((context, index) {
+              final users = user[index];
+              return ListTile(
+                title: Text(users['user_name']),
+              );
+            }),
+          );
+        },
+      ),
+    );*/
     return Scaffold(
       appBar: AppBar(
         title: const Text('Streaming App UI'),
@@ -40,6 +68,7 @@ class MyHomePage extends StatelessWidget {
                 Tab(text: 'Alle'),
                 Tab(text: 'Filme'),
                 Tab(text: 'Serien'),
+                Tab(text: 'DBtest'),
               ],
             ),*/
             // Film Listenansichten

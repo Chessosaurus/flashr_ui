@@ -1,8 +1,11 @@
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'providers/db_initializer.dart';
 import 'package:flasher_ui/src/screens/login.dart';
 
 void main() {
+  DBInitializer().initialize();
   runApp(const MyApp());
 }
 
