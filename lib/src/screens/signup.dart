@@ -12,15 +12,27 @@ class _SignupState extends State<Signup> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final username = "username";
 
   Future<void> _signUp() async {
-    final response = await Supabase.instance.client.auth.signUp(
-      email: _emailController.text,
-      password: _passwordController.text,
-      data: {'username': _usernameController},
-    );
-    final Session? session = response.session;
-    final User? user = response.user;
+    if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty && _usernameController.text.isNotEmpty){
+      final response = await Supabase.instance.client.auth.signUp(
+        email: _emailController.text,
+        password: _passwordController.text,
+        data: {
+          username: _usernameController.text,
+        },
+      );
+      final Session? session = response.session;
+      final User? user = response.user;
+    } else {
+      showDialog(context: context, builder: (context){
+        return AlertDialog(
+          content: Text("No Input"),
+        );
+      });
+    }
+
   }
 
   @override
@@ -55,13 +67,15 @@ class _SignupState extends State<Signup> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextField(
+                      controller: _usernameController,
                       autofocus: true,
                       decoration: InputDecoration(
-                        labelText: 'Name',
+                        labelText: 'Username',
                       ),
                     ),
                     SizedBox(height: 20),
                     TextField(
+                      controller: _emailController,
                       autofocus: true,
                       decoration: InputDecoration(
                         labelText: 'E-Mail',
@@ -69,6 +83,7 @@ class _SignupState extends State<Signup> {
                     ),
                     SizedBox(height: 20),
                     TextField(
+                      controller: _passwordController,
                       autofocus: true,
                       obscureText: true,
                       decoration: InputDecoration(

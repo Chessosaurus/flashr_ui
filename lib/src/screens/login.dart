@@ -19,6 +19,22 @@ class _LoginScreenState extends State<LoginScreen> {
     _setupAuthListener();
     super.initState();
   }
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _login() async {
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      final response = await Supabase.instance.client.auth.signInWithPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      final Session? session = response.session;
+      final User? user = response.user;
+    }
+  }
+
+
 
   void _setupAuthListener() {
     Supabase.instance.client.auth.onAuthStateChange.listen((data) {
@@ -100,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextField(
+                      controller: _emailController,
                       autofocus: true,
                       decoration: InputDecoration(
                         labelText: 'E-Mail',
@@ -107,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 20),
                     TextField(
+                      controller: _passwordController,
                       autofocus: true,
                       obscureText: true,
                       decoration: InputDecoration(
@@ -133,9 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        // Aktion für den Login Button hier einfügen
-                      },
+                      onPressed: _login,
                       child: Text('Log In'),
                     ),
                     SizedBox(height: 30),
