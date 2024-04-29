@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'providers/db_initializer.dart';
 import 'package:flasher_ui/src/screens/login.dart';
+import 'package:flasher_ui/src/screens/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +49,8 @@ class App extends StatelessWidget {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
           )
-        )
+        ),
+
       ),
         initialRoute: '/', routes: <String, WidgetBuilder>{
         '/': (_) => SplashPage(supabase: supabase),
