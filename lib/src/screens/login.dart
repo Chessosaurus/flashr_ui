@@ -1,52 +1,64 @@
+import 'dart:js_interop';
+
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:flasher_ui/src/screens/reset_password.dart';
 import 'package:flasher_ui/src/screens/signup.dart';
+import 'package:flasher_ui/src/widgets/snackbarwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.supabase});
+  final SupabaseClient supabase;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  @override
-  void initState() {
-    _setupAuthListener();
-    super.initState();
-  }
+  bool _redirecting = false;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  Future<void> _login() async {
-    if (_emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      final response = await Supabase.instance.client.auth.signInWithPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      final Session? session = response.session;
-      final User? user = response.user;
-    }
+
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
-
-
-
-  void _setupAuthListener() {
-    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-      final event = data.event;
-      if (event == AuthChangeEvent.signedIn) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ),
-        );
+  @override
+  void initState() {
+    widget.supabase.auth.onAuthStateChange.listen((data) {
+      if(_redirecting) return;
+      final session = data.session;
+      if(session != null) {
+        _redirecting = true;
+        Navigator.of(context).pushReplacementNamed('/homepage');
       }
     });
+    super.initState();
+  }
+
+  Future<void> _signIn() async {
+    try{
+      await widget.supabase.auth.signInWithPassword(email: _emailController.text, password: _passwordController.text);
+      if (mounted) {
+        _emailController.clear();
+        _passwordController.clear();
+
+        _redirecting = true;
+        Navigator.of(context).pushReplacementNamed('/homepage');
+      }
+    } on AuthException catch (error) {
+      context.showErrorSnackBar(message: error.message);
+    } catch (error) {
+      context.showErrorSnackBar(message: "Unexpected error occurred");
+    }
   }
   Future<AuthResponse> _googleSignIn() async {
     /// TODO: update the Web client ID with your own.
@@ -151,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: _login,
+                      onPressed: _signIn,
                       child: Text('Log In'),
                     ),
                     SizedBox(height: 30),

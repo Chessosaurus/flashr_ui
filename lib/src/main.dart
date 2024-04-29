@@ -1,16 +1,20 @@
 import 'package:flasher_ui/src/screens/home.dart';
+import 'package:flasher_ui/src/screens/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'providers/db_initializer.dart';
 import 'package:flasher_ui/src/screens/login.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   DBInitializer().initialize();
-  runApp(const MyApp());
+  final supabase = Supabase.instance.client;
+  runApp( App(supabase: supabase));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({Key? key, required this.supabase}) : super(key: key);
+  final SupabaseClient supabase;
 
   // This widget is the root of your application.
   @override
@@ -46,8 +50,11 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      //home: const MyHomePage(),
-      home: const LoginScreen(),
+        initialRoute: '/', routes: <String, WidgetBuilder>{
+        '/': (_) => SplashPage(supabase: supabase),
+        '/login': (_) => LoginScreen(supabase: supabase),
+        '/homepage': (_) => HomePage(supabase: supabase),
+    }
     );
   }
 }

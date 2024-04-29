@@ -1,41 +1,39 @@
+import 'package:flasher_ui/src/providers/movieprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/album.dart';
+import '../models/movie.dart';
+
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.supabase});
+  final SupabaseClient supabase;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
-  final _future = Supabase.instance.client.schema('persistence')
-      .from('User').select();
+  late Future<Movie?> futureAlbum;
+
+  @override
+  void initState() {
+    super.initState();
+    Movieprovider mv = new Movieprovider();
+    futureAlbum = mv.fetchMovies();
+  }
+
+  void fetchData(){
+    Movieprovider mv = new Movieprovider();
+    //mv.fetchMovies();
+    //futureAlbum = mv.fetchAlbum();
+  }
+
   @override
   Widget build(BuildContext context) {
-/*    return Scaffold(
-      body: FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final user = snapshot.data!;
-          return ListView.builder(
-            itemCount: user.length,
-            itemBuilder: ((context, index) {
-              final users = user[index];
-              return ListTile(
-                title: Text(users['user_name']),
-              );
-            }),
-          );
-        },
-      ),
-    );*/
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Streaming App UI'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -45,9 +43,7 @@ class _HomePageState extends State<HomePage> {
           ),
           IconButton(
             icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              // Nutzerprofil
-            },
+            onPressed: fetchData,
           )
         ],
       ),
