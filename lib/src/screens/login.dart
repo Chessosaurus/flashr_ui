@@ -1,6 +1,3 @@
-import 'dart:js_interop';
-
-import 'package:flasher_ui/src/screens/home.dart';
 import 'package:flasher_ui/src/screens/reset_password.dart';
 import 'package:flasher_ui/src/screens/signup.dart';
 import 'package:flasher_ui/src/widgets/snackbarwidget.dart';
