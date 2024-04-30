@@ -16,8 +16,6 @@ class Friends extends StatefulWidget {
 }
 
 class _Friends extends State<Friends> {
-  final _future = Supabase.instance.client.schema('persistence')
-      .from('User').select();
   int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
@@ -28,15 +26,15 @@ class _Friends extends State<Friends> {
     switch (index) {
       case 0:
       // Navigation zur Startseite
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.of(context).pushReplacementNamed('/homepage');
         break;
       case 1:
       // Navigation zu den Favoriten
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MovieSwipe()));
+        Navigator.of(context).pushReplacementNamed('/movieswipe');
         break;
       case 2:
       // Navigation zum Profil
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Friends()));
+        Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
   }

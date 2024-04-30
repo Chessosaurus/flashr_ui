@@ -27,8 +27,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Movieprovider mv = new Movieprovider();
-    futureAlbum = mv.fetchMovies();
   }
 
   void fetchData(){
@@ -37,9 +35,6 @@ class _HomePageState extends State<HomePage> {
     //futureAlbum = mv.fetchAlbum();
   }
 
-  //Wird das gebraucht??? @Timo war bei Mergeconflict bei dir nicht mit drin
-  final _future = Supabase.instance.client.schema('persistence')
-      .from('User').select();
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -50,15 +45,15 @@ class _HomePageState extends State<HomePage> {
     switch (index) {
       case 0:
       // Navigation zur Startseite
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(supabase: supabase,)));
+        Navigator.of(context).pushReplacementNamed('/homepage');
         break;
       case 1:
       // Navigation zu den Favoriten
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MovieSwipe()));
+        Navigator.of(context).pushReplacementNamed('/movieswipe');
         break;
       case 2:
       // Navigation zum Profil
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Friends()));
+        Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
   }

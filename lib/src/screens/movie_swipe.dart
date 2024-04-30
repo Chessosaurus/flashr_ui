@@ -16,27 +16,24 @@ class MovieSwipe extends StatefulWidget {
 }
 
 class _MovieSwipe extends State<MovieSwipe> {
-  final _future = Supabase.instance.client.schema('persistence')
-      .from('User').select();
   int _selectedIndex = 1;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-    // Hier füge deine Navigationslogik hinzu, basierend auf dem ausgewählten Index
     switch (index) {
       case 0:
       // Navigation zur Startseite
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.of(context).pushReplacementNamed('/homepage');
         break;
       case 1:
       // Navigation zu den Favoriten
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MovieSwipe()));
+        Navigator.of(context).pushReplacementNamed('/movieswipe');
         break;
       case 2:
       // Navigation zum Profil
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Friends()));
+        Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
   }

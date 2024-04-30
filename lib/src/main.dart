@@ -1,4 +1,7 @@
+import 'package:flasher_ui/src/screens/friends.dart';
 import 'package:flasher_ui/src/screens/home.dart';
+import 'package:flasher_ui/src/screens/movie_swipe.dart';
+import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/screens/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -56,6 +59,9 @@ class App extends StatelessWidget {
         '/': (_) => SplashPage(supabase: supabase),
         '/login': (_) => LoginScreen(supabase: supabase),
         '/homepage': (_) => HomePage(supabase: supabase),
+        '/profile': (_) => ProfilePage(),
+        '/movieswipe': (_) => const MovieSwipe(),
+        '/friends': (_) => const Friends(),
     }
     );
   }

@@ -35,10 +35,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   void _navigateBack(BuildContext context) {
-    //Navigator.push(
-    //  context,
-    //  MaterialPageRoute(builder: (context) => const HomePage()),
-    //);
+    Navigator.of(context).pushReplacementNamed('/homepage');
   }
 }
 
