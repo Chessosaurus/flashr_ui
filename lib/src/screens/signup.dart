@@ -1,3 +1,6 @@
+import 'package:flasher_ui/src/screens/home.dart';
+import 'package:flasher_ui/src/services/supabase_auth_service.dart';
+import 'package:flasher_ui/src/widgets/snackbarwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,22 +12,28 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  final SupabaseAuthService _auth = SupabaseAuthService();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final username = "username";
+  bool _redirecting = false;
+
 
   Future<void> _signUp() async {
-    if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty && _usernameController.text.isNotEmpty){
-      final response = await Supabase.instance.client.auth.signUp(
-        email: _emailController.text,
-        password: _passwordController.text,
-        data: {
-          username: _usernameController.text,
-        },
-      );
-      final Session? session = response.session;
-      final User? user = response.user;
+   if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty && _usernameController.text.isNotEmpty){
+     try{
+       final newUser = await _auth.signUpWithEmailAndPassword(email: _emailController.text, password: _passwordController.text, username: _usernameController.text);
+        if (mounted) {
+          _emailController.clear();
+          _passwordController.clear();
+          _redirecting = true;
+          Navigator.of(context).pushReplacementNamed('/homepage');
+        }
+     } on AuthException catch (error) {
+       context.showErrorSnackBar(message: error.message);
+     } catch (error) {
+       context.showErrorSnackBar(message: "Unexpected error occurred");
+     }
     } else {
       showDialog(context: context, builder: (context){
         return AlertDialog(
@@ -33,6 +42,14 @@ class _SignupState extends State<Signup> {
       });
     }
 
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _usernameController.dispose();
+    super.dispose();
   }
 
   @override

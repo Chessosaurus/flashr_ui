@@ -1,9 +1,11 @@
+import 'package:flasher_ui/src/models/movie.dart';
 import 'package:flutter/material.dart';
 
 class CategorySection extends StatelessWidget {
   final String title;
+  final List<Movie> movies;
 
-  const CategorySection({super.key, required this.title});
+  const CategorySection({Key? key, required this.title, required this.movies}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +21,27 @@ class CategorySection extends StatelessWidget {
         ),
         SizedBox(
           height: 180,
-          child: ListView.builder(
+          child: movies.isEmpty ? Center(child: Text("Keine Filme verfügbar")) : ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 10, // Hier die Anzahl der Elemente eintragen
+            itemCount: movies.length, // Hier die Anzahl der Elemente eintragen
             itemBuilder: (context, index) {
+              final movie = movies[index];
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0, top: 8.0),
                 child: Container(
                   width: 120,
-                  color: Colors
-                      .grey, // Hier würde das Bild des Films oder der Serie stehen
+                  color: Colors.grey, // Hier würde das Bild des Films oder der Serie stehen
+                  child: Column(
+                    children: [
+                  // Zeige das Bild des Films an
+                  Image.network(
+                  'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                    width: 120,
+                    height: 172,
+                    fit: BoxFit.cover,
+                  ),
+                    ],
+                  ),
                 ),
               );
             },

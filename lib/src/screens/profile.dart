@@ -1,8 +1,18 @@
+import 'package:flasher_ui/src/models/user_flashr.dart';
 import 'package:flutter/material.dart';
 import 'package:flasher_ui/src/screens/home.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../widgets/category_section.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,25 +49,30 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  bool _isLoading = false;
+  final User? user = Supabase.instance.client.auth.currentUser;
+
   @override
   Widget build(BuildContext context) {
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 80,
-            backgroundImage: AssetImage('assets/profile_pic.jpg'), // Profilbild hier einfügen
+            backgroundImage: AssetImage('assets/logo/flashr_logo.png'), // Profilbild hier einfügen
           ),
           SizedBox(height: 20),
           Text(
-            'Vorname Nachname', // Benutzername hier einfügen
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '@benutzername', // Benutzername hier einfügen
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 18), // Benutzername hier einfügen
+            user?.userMetadata?["username"] != null ? user!.userMetadata!['username'].toString(): "not defined",
           ),
           SizedBox(height: 20),
           Row(
@@ -69,9 +84,9 @@ class ProfileView extends StatelessWidget {
             ],
           ),
           SizedBox(height: 40),
-          CategorySection(title: 'Watchlist'),
+          CategorySection(title: 'Watchlist', movies: []),
           SizedBox(height: 20),
-          CategorySection(title: 'Zuletzt gesehen')
+          CategorySection(title: 'Zuletzt gesehen', movies: [])
         ],
       ),
     );

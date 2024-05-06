@@ -38,6 +38,11 @@ dependencies:
   supabase_flutter: ^2.5.0
   google_sign_in: ^6.2.1
   http: ^1.2.1
+  provider: ^6.0.3
+  flutter_dotenv: ^5.1.0
+  flutter_bloc: ^8.1.5
+
+
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +73,8 @@ flutter:
 
   assets:
     - assets/logo/flashr_logo.png
+    - assets/icons/swipe_icon.png
+    - assets/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -5,13 +5,23 @@ import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/screens/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'providers/db_initializer.dart';
 import 'package:flasher_ui/src/screens/login.dart';
-import 'package:flasher_ui/src/screens/home.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  DBInitializer().initialize();
+
+  // load env
+  await dotenv.load(fileName: 'assets/.env');
+  String supabaseBaseUrl = dotenv.env['SUPABASE_BASE_URL'] ?? '';
+  String supabaseBaseKey = dotenv.env['SUPABASE_BASE_KEY'] ?? '';
+
+  await Supabase.initialize(
+    url: supabaseBaseUrl,
+    anonKey: supabaseBaseKey,
+    debug: false,
+  );
+
   final supabase = Supabase.instance.client;
   runApp( App(supabase: supabase));
 }

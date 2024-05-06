@@ -20,7 +20,7 @@ class NavBar extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('icons/swipe_icon.png')),
+            icon: ImageIcon(AssetImage('assets/icons/swipe_icon.png')),
             label: 'Swipe',
           ),
           BottomNavigationBarItem(

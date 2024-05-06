@@ -47,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         _emailController.clear();
         _passwordController.clear();
-
         _redirecting = true;
         Navigator.of(context).pushReplacementNamed('/homepage');
       }
@@ -107,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('logo/flashr_logo.png', width: 200),
+                    Image.asset('assets/logo/flashr_logo.png', width: 200),
                     SizedBox(height: 100),
                     Text(
                       'Anmelden',
