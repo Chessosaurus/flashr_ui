@@ -34,7 +34,7 @@ class NavBar extends StatelessWidget {
         iconSize: 50,
         showUnselectedLabels: false,
         showSelectedLabels: false,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
       ),
     );
   }

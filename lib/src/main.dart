@@ -11,7 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // load env
+  // load .env
   await dotenv.load(fileName: 'assets/.env');
   String supabaseBaseUrl = dotenv.env['SUPABASE_BASE_URL'] ?? '';
   String supabaseBaseKey = dotenv.env['SUPABASE_BASE_KEY'] ?? '';
@@ -65,11 +65,11 @@ class App extends StatelessWidget {
         ),
 
       ),
-        initialRoute: '/', routes: <String, WidgetBuilder>{
+        initialRoute: '/l', routes: <String, WidgetBuilder>{
         '/': (_) => SplashPage(supabase: supabase),
         '/login': (_) => LoginScreen(supabase: supabase),
         '/homepage': (_) => HomePage(supabase: supabase),
-        '/profile': (_) => ProfilePage(),
+        '/profile': (_) => const ProfilePage(),
         '/movieswipe': (_) => const MovieSwipe(),
         '/friends': (_) => const Friends(),
     }
