@@ -1,4 +1,6 @@
 import 'package:flasher_ui/src/models/user_flashr.dart';
+import 'package:flasher_ui/src/services/supabase_auth_service.dart';
+import 'package:flasher_ui/src/widgets/snackbarwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,26 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final _auth = SupabaseAuthService();
+
+  Future<void> _signOut() async {
+    try{
+      await _auth.signOut();
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/login');
+      }
+    } on AuthException catch (error) {
+      context.showErrorSnackBar(message: error.message);
+    } catch (error) {
+      context.showErrorSnackBar(message: "Unexpected error occurred");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: () {
-              // Implementiere die Einstellungen-Funktion hier
-            },
+            onPressed:  _signOut
           ),
         ],
       ),

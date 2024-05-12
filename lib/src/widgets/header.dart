@@ -61,9 +61,6 @@ class Header extends StatelessWidget {
     );
   }
   void _navigateToProfile(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ProfilePage()),
-    );
+    Navigator.of(context).pushReplacementNamed('/profile');
   }
 }

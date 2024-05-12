@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:math' as math;
 
+import '../models/movie.dart';
+import '../services/movie_service.dart';
 import '../widgets/navbar.dart';
 
 class MovieSwipe extends StatefulWidget {
@@ -14,20 +16,9 @@ class MovieSwipe extends StatefulWidget {
 
 class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  List<CardData> cards = [
-    CardData(
-      title: "Inception",
-      description: "Ein Film über Träume und Realität.",
-    ),
-    CardData(
-      title: "Interstellar",
-      description: "Eine Reise durch Raum und Zeit.",
-    ),
-    CardData(
-      title: "The Dark Knight",
-      description: "Ein Superheldenepos über den Dunklen Ritter.",
-    ),
-  ];
+  List<String> movieImages = [];
+  List<Movie> movies = [];
+  List<CardData> cards = [];
 
   @override
   void initState() {
@@ -36,6 +27,18 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
+    fetchMovieImages();
+  }
+
+  Future<void> fetchMovieImages() async {
+    try {
+       movies = await MovieService.fetchSwipeMovieRecommendation(10);
+      setState(() {
+        cards = CardData.fromMovies(movies);
+      });
+    } catch (e) {
+      print('Failed to fetch swipe movie recommendations: $e');
+    }
   }
 
   int _selectedIndex = 1;
@@ -84,6 +87,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
             child: Stack(
               children: cards.map((card) {
                 int index = cards.indexOf(card);
+                //String movieImage = cards.removeAt(index).posterPath;
                 return DraggableCard(
                   cardData: card,
                   onSwipe: () {
@@ -102,7 +106,8 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     });
                   },
                   controller: _controller,
-                  zIndex: index.toDouble(), // Stelle die Karten im Stapel dar
+                  zIndex: index.toDouble(),
+                   // Stelle die Karten im Stapel dar
                 );
               }).toList(),
             ),
@@ -275,7 +280,7 @@ class _DraggableCardState extends State<DraggableCard> {
                 ],
               ),
               child: widget.cardData.isFrontVisible
-                  ? CardFront(title: widget.cardData.title)
+                  ? CardFront(title: widget.cardData.posterPath)
                   : CardBack(title: widget.cardData.title, description: widget.cardData.description),
             ),
           ),
@@ -292,18 +297,19 @@ class CardFront extends StatelessWidget {
   CardFront({required this.title});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ) {
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(8.0),
       child: Center(
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 24.0,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        child: Column(
+          children: [
+          // Zeige das Bild des Films an
+            Image.network(
+              'https://image.tmdb.org/t/p/w500${title}',
+              fit: BoxFit.fill,
+            ),
+        ],
+      ),
       ),
     );
   }
@@ -355,7 +361,17 @@ class CardBack extends StatelessWidget {
 class CardData {
   String title;
   String description;
+  String posterPath;
   bool isFrontVisible;
 
-  CardData({required this.title, required this.description, this.isFrontVisible = true});
+  CardData({required this.title, required this.description, this.isFrontVisible = true, required this.posterPath});
+
+  static List<CardData> fromMovies(List<Movie> movies) {
+    return movies.map((movie) => CardData(
+      title: movie.title,
+      description: movie.overview,
+      posterPath: movie.posterPath,
+    )).toList();
+  }
+
 }
