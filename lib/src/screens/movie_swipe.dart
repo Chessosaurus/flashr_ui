@@ -237,11 +237,20 @@ class _DraggableCardState extends State<DraggableCard> {
             });
           },
           onPanEnd: (details) {
-            double deltaX = _position.dx - _startPosition.dx;
-            if (widget.cardData.isFrontVisible && deltaX > widget.swipeThreshold) {
-              // Wenn die horizontale Verschiebung den Schwellenwert überschreitet
+            double deltaX1 = _position.dx - _startPosition.dx;
+            double deltaX2 = _startPosition.dx - _position.dx;
+            double deltaY = _startPosition.dy - _position.dy;
+            if (widget.cardData.isFrontVisible && deltaX1 > widget.swipeThreshold) { //Überprüfung auf Rechts-Swipe
+              print("rechts");
               widget.onSwipe();
+            }else if (widget.cardData.isFrontVisible && deltaX2 > 350){ //Überprüfung auf Links-Swipe
+              widget.onSwipe();
+              print("links");
+            }else if (widget.cardData.isFrontVisible && deltaY > 700){ //Überprüfung auf Oben-Swipe
+              widget.onSwipe();
+              print("oben");
             }
+
             // Bringe die Karte immer zum Ausgangspunkt zurück
             setState(() {
               _position = Offset.zero;
@@ -281,7 +290,7 @@ class _DraggableCardState extends State<DraggableCard> {
               ),
               child: widget.cardData.isFrontVisible
                   ? CardFront(title: widget.cardData.posterPath)
-                  : CardBack(title: widget.cardData.title, description: widget.cardData.description),
+                  : CardBack(title: widget.cardData.title, description: widget.cardData.description, posterPath: widget.cardData.posterPath),
             ),
           ),
         );
@@ -297,19 +306,25 @@ class CardFront extends StatelessWidget {
   CardFront({required this.title});
 
   @override
-  Widget build(BuildContext context, ) {
+  Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8.0),
-      child: Center(
-        child: Column(
-          children: [
-          // Zeige das Bild des Films an
-            Image.network(
-              'https://image.tmdb.org/t/p/w500${title}',
-              fit: BoxFit.fill,
-            ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0), // abgerundete Ecken der Karte
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
         ],
       ),
+      child: ClipRRect( // um die abgerundeten Ecken zu behalten
+        borderRadius: BorderRadius.circular(15.0),
+        child: Image.network(
+          'https://image.tmdb.org/t/p/w500${title}',
+          fit: BoxFit.cover, // das Bild so skalieren, dass es die komplette Fläche abdeckt
+        ),
       ),
     );
   }
@@ -318,45 +333,68 @@ class CardFront extends StatelessWidget {
 class CardBack extends StatelessWidget {
   final String title;
   final String description;
+  final String posterPath;
 
-  CardBack({required this.title, required this.description});
+  CardBack({required this.title, required this.description, required this.posterPath});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(20.0),
-        child: Center(
-          // Verwende Transform, um den Text separat zu drehen, während der Container gedreht wird
-          child: Transform(
-            transform: Matrix4.rotationY(math.pi), // Drehung um die Y-Achse um 180 Grad (pi Radiant)
-            alignment: Alignment.center,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold
-                  )
-                ),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ],
-            )
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15.0), // Abgerundete Ecken der Karte beibehalten
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Bild von der Vorderseite als Hintergrund
+          Image.network(
+            'https://image.tmdb.org/t/p/w500$posterPath',
+            fit: BoxFit.cover,
           ),
-        ),
+          // Schwarze transparente Schicht
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.9), // Schwarze transparente Farbe
+            ),
+          ),
+          // Textinhalt zentriert auf der Karte
+          Align(
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(20.0),
+              child: Transform(
+                transform: Matrix4.rotationY(math.pi), // Drehung um die Y-Achse um 180 Grad (pi Radiant)
+                alignment: Alignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
+                    Text(
+                      description,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+
 
 class CardData {
   String title;
