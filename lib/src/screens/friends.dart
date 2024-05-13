@@ -1,5 +1,6 @@
 import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
+import 'package:flasher_ui/src/widgets/header_friends.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -62,7 +63,36 @@ class _Friends extends State<Friends> {
         ],
       ),
       */
+
       body: const SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget> [
+              HeaderFriends(),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Suche nach Freunden',
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Deine Freunde',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              ListTile(
+                title: Text('Freund1'),
+              ),
+              ListTile(
+                title: Text('Freund2'),
+              ),
+            ],
+          )
+        ),
       ),
       bottomNavigationBar: NavBar(
         selectedIndex: _selectedIndex,

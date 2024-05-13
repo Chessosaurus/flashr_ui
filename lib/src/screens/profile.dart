@@ -51,7 +51,9 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed:  _signOut
+            onPressed:  (){
+              _navigateToSettings(context);
+            }
           ),
         ],
       ),
@@ -67,6 +69,10 @@ class _ProfilePageState extends State<ProfilePage> {
   void _navigateBack(BuildContext context) {
     Navigator.of(context).pushReplacementNamed('/homepage');
   }
+}
+
+void _navigateToSettings(BuildContext context) {
+  Navigator.of(context).pushReplacementNamed('/settings');
 }
 
 class ProfileView extends StatefulWidget {
