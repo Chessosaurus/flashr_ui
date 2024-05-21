@@ -4,7 +4,7 @@ import 'package:flasher_ui/src/services/movie_service.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/album.dart';
+
 import '../models/movie.dart';
 
 import '../widgets/category_section.dart';
@@ -24,16 +24,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Movie>> trendingMovies;
-  late Future<List<Movie>> movieRecommendations;
-  late Future<List<Movie>> friendMovieRecommendations;
+  //late Future<List<Movie>> movieRecommendations;
+  //late Future<List<Movie>> friendMovieRecommendations;
   late Future<List<Movie>> watchlist;
 
   @override
   void initState() {
     super.initState();
     trendingMovies =  MovieService.fetchMoviesTrending(true);
+    watchlist = MovieService.fetchMovieWatchlist();
     //movieRecommendations = MovieService.fetchMovieRecommendation();
-    //swipeMovieRecommendations = MovieService.fetchSwipeMovieRecommendation();
   }
 
   int _selectedIndex = 0;
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                     // Film Listenansichten
                     SizedBox(height: 20),
                     FutureBuilder<List<Movie>>(
-                      future: trendingMovies,
+                      future: watchlist,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -110,10 +110,21 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                     ),
-                    SizedBox(height: 20),
-                    CategorySection(title: 'Für dich Empfohlen', movies: []),
-                    SizedBox(height: 20),
-                    CategorySection(title: 'Von Freunden Empfohlen', movies: []),
+                    /*SizedBox(height: 20),
+                    FutureBuilder<List<Movie>>(
+                      future: [s],
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return CategorySection(title: 'Für dich Empfohlen',
+                              movies: []);
+                        }
+                      },
+                    ),*/
                     SizedBox(height: 20),
                     FutureBuilder<List<Movie>>(
                       future: trendingMovies,
@@ -129,7 +140,6 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                     ),
-                    // Weitere Listen ...
                   ],
                 ),
               ),

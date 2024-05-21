@@ -6,14 +6,14 @@ class SupabaseAuthService {
   final SupabaseClient _supabaseClient = Supabase.instance.client;
 
 
-  UserFlashr? _userFromSupabase(User? user){
+  UserFlashr? _userFromSupabase(User? user) {
     if (user == null) {
       return null;
     } else {
       return UserFlashr(
         userUuid: user.id,
         email: user.email,
-        username: user.userMetadata?['username']
+        username: user.userMetadata?['username'],
       );
     }
 
@@ -38,6 +38,12 @@ class SupabaseAuthService {
 
   Future<UserFlashr?> currentUser() async {
     return _userFromSupabase(_supabaseClient.auth.currentUser);
+  }
+
+  Future<int> getUserId (String uuid) async {
+    final response = await Supabase.instance.client.schema('persistence').rpc('get_user_id_by_uuid', params: {'uuid': uuid});
+    int id = response["user_id"];
+    return id;
   }
 
   Future<void> sendPasswordResetEmail({required String email}) async {

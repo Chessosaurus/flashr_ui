@@ -1,11 +1,11 @@
 class Movie {
   final String posterPath;
   final int id;
-  final List<int> genreIds;
+  final List<int>? genreIds;
   final String title;
-  final double voteAverage;
+  final double? voteAverage;
   final String overview;
-  final String releasedate;
+  final String? releasedate;
 
 
   const Movie({
@@ -14,7 +14,7 @@ class Movie {
     required this.releasedate,
     required this.voteAverage,
     required this.id,
-    required this.genreIds,
+    this.genreIds,
     required this.title,
   });
 
@@ -23,7 +23,7 @@ class Movie {
     return Movie(
       posterPath: json['poster_path'] ?? '',
       id: json['id']?.toInt() ?? 0,
-      genreIds: json['genre_ids'].cast<int>(),
+      //genreIds: json['genre_ids'].cast<int>() ?? 0,
       title: json['title'] ?? '',
       voteAverage: json['vote_average']?.toDouble() ?? 0.0,
       overview: json['overview'] ?? '',

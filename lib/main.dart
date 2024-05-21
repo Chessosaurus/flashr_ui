@@ -66,7 +66,7 @@ class App extends StatelessWidget {
         ),
 
       ),
-        initialRoute: '/l', routes: <String, WidgetBuilder>{
+        initialRoute: '/', routes: <String, WidgetBuilder>{
         '/': (_) => SplashPage(supabase: supabase),
         '/login': (_) => LoginScreen(supabase: supabase),
         '/homepage': (_) => HomePage(supabase: supabase),

@@ -87,12 +87,14 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
             child: Stack(
               children: cards.map((card) {
                 int index = cards.indexOf(card);
-                //String movieImage = cards.removeAt(index).posterPath;
                 return DraggableCard(
                   cardData: card,
                   onSwipe: () {
                     setState(() {
                       cards.remove(card);
+                      if(cards.isEmpty){
+                        fetchMovieImages();
+                      }
                     });
                   },
                   onTap: () {
@@ -119,7 +121,9 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Aktion beim Klick auf "Alle"
+                        setState(() {
+                          MovieService.setMovieStatusUninterested(cards.removeLast().id);
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size.fromHeight(40),
@@ -131,8 +135,9 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Aktion beim Klick auf "Filme"
-
+                        setState(() {
+                          MovieService.setMovieStatusInterested(cards.removeLast().id);
+                        });
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size.fromHeight(40),
@@ -144,7 +149,9 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Aktion beim Klick auf "Serien"
+                        setState(() {
+                          MovieService.setMovieStatusWatched(cards.removeLast().id);
+                        });
 
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
                       style: ElevatedButton.styleFrom(
@@ -401,11 +408,13 @@ class CardData {
   String description;
   String posterPath;
   bool isFrontVisible;
+  int id;
 
-  CardData({required this.title, required this.description, this.isFrontVisible = true, required this.posterPath});
+  CardData({required this.id,required this.title, required this.description, this.isFrontVisible = true, required this.posterPath});
 
   static List<CardData> fromMovies(List<Movie> movies) {
     return movies.map((movie) => CardData(
+      id: movie.id,
       title: movie.title,
       description: movie.overview,
       posterPath: movie.posterPath,
