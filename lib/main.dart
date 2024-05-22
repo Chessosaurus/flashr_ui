@@ -4,11 +4,14 @@ import 'package:flasher_ui/src/screens/movie_swipe.dart';
 import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/screens/search_result.dart';
 import 'package:flasher_ui/src/screens/settings.dart';
+import 'package:flasher_ui/src/screens/groups.dart';
+import 'package:flasher_ui/src/screens/requests.dart';
 import 'package:flasher_ui/src/screens/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flasher_ui/src/screens/login.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,6 +79,8 @@ class App extends StatelessWidget {
         '/friends': (_) => const Friends(),
         '/settings': (_) => const Settings(),
         '/search':(_) => const SearchPage(),
+        '/groups':(_) => const Groups(),
+        '/requests':(_) => const Requests(),
     }
     );
   }

@@ -63,57 +63,38 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      /*
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Suchfunktion
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: fetchData,
-          )
-        ],
-      ),
-      */
       body: SingleChildScrollView(
         child: Column( // Hier wurde das Column-Widget hinzugefügt
           children: <Widget>[
-            SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Header(),
-                    // Suchleiste
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Suche nach Filmen, Serien, Genres etc.',
-                        prefixIcon: Icon(Icons.search),
-                      ),
-                      onTap: () {
-                        Navigator.pushNamed(context, '/search');
-                      },
+            Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Header(),
+                  // Suchleiste
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Suche nach Filmen, Serien, Genres etc.',
+                      prefixIcon: Icon(Icons.search),
                     ),
-                    // Film Listenansichten
-                    SizedBox(height: 20),
-                    FutureBuilder<List<Movie>>(
-                      future: watchlist,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return CategorySection(title: 'Deine Watchlist',
-                              movies: snapshot.data!);
-                        }
-                      },
-                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/search');},
+                  ),
+                  // Film Listenansichten
+                  SizedBox(height: 20),
+                  FutureBuilder<List<Movie>>(
+                    future: watchlist,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return CategorySection(title: 'Deine Watchlist',
+                            movies: snapshot.data!);
+                      }},
+                  ),
                     /*SizedBox(height: 20),
                     FutureBuilder<List<Movie>>(
                       future: [s],
@@ -129,23 +110,22 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                     ),*/
-                    SizedBox(height: 20),
-                    FutureBuilder<List<Movie>>(
-                      future: trendingMovies,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return CategorySection(title: 'Beliebte Filme',
-                              movies: snapshot.data!);
-                        }
-                      },
-                    ),
-                  ],
-                ),
+                  SizedBox(height: 20),
+                  FutureBuilder<List<Movie>>(
+                    future: trendingMovies,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return CategorySection(title: 'Beliebte Filme',
+                            movies: snapshot.data!);
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
           ],
