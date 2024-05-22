@@ -5,6 +5,8 @@ class SwipeCard extends StatefulWidget {
   final String title;
   final String description;
   final String posterPath;
+  final double voteAverage;
+  final String releaseDate;
   final bool isFrontVisible;
   final Function onTap;
   final Function onSwipe;
@@ -16,6 +18,8 @@ class SwipeCard extends StatefulWidget {
     this.isFrontVisible = true,
     required this.onTap,
     required this.onSwipe,
+    required this.voteAverage,
+    required this.releaseDate,
   });
 
   @override

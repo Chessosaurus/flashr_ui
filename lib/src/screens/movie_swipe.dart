@@ -297,7 +297,7 @@ class _DraggableCardState extends State<DraggableCard> {
               ),
               child: widget.cardData.isFrontVisible
                   ? CardFront(title: widget.cardData.posterPath)
-                  : CardBack(title: widget.cardData.title, description: widget.cardData.description, posterPath: widget.cardData.posterPath),
+                  : CardBack(title: widget.cardData.title, description: widget.cardData.description, posterPath: widget.cardData.posterPath, voteAverage: widget.cardData.voteAverage, releaseDate: widget.cardData.releaseDate),
             ),
           ),
         );
@@ -341,8 +341,10 @@ class CardBack extends StatelessWidget {
   final String title;
   final String description;
   final String posterPath;
+  final double voteAverage;
+  final String releaseDate;
 
-  CardBack({required this.title, required this.description, required this.posterPath});
+  CardBack({required this.title, required this.description, required this.posterPath, required this.voteAverage, required this.releaseDate });
 
   @override
   Widget build(BuildContext context) {
@@ -390,6 +392,22 @@ class CardBack extends StatelessWidget {
 
                       ),
                     ),
+                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
+                    Text(
+                      voteAverage.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        ),
+                      ),
+                        SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
+                        Text(
+                          releaseDate,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                          ),
+                        ),
                   ],
                 ),
               ),
@@ -407,10 +425,12 @@ class CardData {
   String title;
   String description;
   String posterPath;
+  double voteAverage;
+  String releaseDate;
   bool isFrontVisible;
   int id;
 
-  CardData({required this.id,required this.title, required this.description, this.isFrontVisible = true, required this.posterPath});
+  CardData({required this.id,required this.title, required this.description, this.isFrontVisible = true, required this.posterPath, required this.voteAverage, required this.releaseDate});
 
   static List<CardData> fromMovies(List<Movie> movies) {
     return movies.map((movie) => CardData(
@@ -418,6 +438,8 @@ class CardData {
       title: movie.title,
       description: movie.overview,
       posterPath: movie.posterPath,
+      voteAverage: movie.voteAverage,
+      releaseDate: movie.releaseDate,
     )).toList();
   }
 

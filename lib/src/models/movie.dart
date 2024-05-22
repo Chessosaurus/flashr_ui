@@ -3,15 +3,15 @@ class Movie {
   final int id;
   final List<int>? genreIds;
   final String title;
-  final double? voteAverage;
+  final double voteAverage;
   final String overview;
-  final String? releasedate;
+  final String releaseDate;
 
 
   const Movie({
     required this.posterPath,
     required this.overview,
-    required this.releasedate,
+    required this.releaseDate,
     required this.voteAverage,
     required this.id,
     this.genreIds,
@@ -27,7 +27,7 @@ class Movie {
       title: json['title'] ?? '',
       voteAverage: json['vote_average']?.toDouble() ?? 0.0,
       overview: json['overview'] ?? '',
-      releasedate: json['release_date'] ?? '',
+      releaseDate: json['release_date'] ?? '',
     );
   }
 
@@ -39,7 +39,7 @@ class Movie {
       'title': title,
       'vote_average': voteAverage,
       'overview': overview,
-      'release_date': releasedate,
+      'release_date': releaseDate,
     };
   }
 
