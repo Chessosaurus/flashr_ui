@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
+
   }
 
   @override
@@ -93,6 +94,9 @@ class _HomePageState extends State<HomePage> {
                         labelText: 'Suche nach Filmen, Serien, Genres etc.',
                         prefixIcon: Icon(Icons.search),
                       ),
+                      onTap: () {
+                        Navigator.pushNamed(context, '/search');
+                      },
                     ),
                     // Film Listenansichten
                     SizedBox(height: 20),

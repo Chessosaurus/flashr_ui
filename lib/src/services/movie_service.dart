@@ -20,18 +20,6 @@ class MovieService {
     }
   }
 
-  static Future<List<Tv>> fetchTvsTrending(bool daily) async {
-    final response =
-    await Supabase.instance.client.functions.invoke('getTrendingTVs');
-    if (response.status == 200) {
-      var data = response.data;
-      List result = data;
-      return result.map((e) => Tv.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to load trending movies');
-    }
-  }
-
   static Future<List<Movie>> fetchMovieRecommendation() async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     int user_id = await SupabaseAuthService().getUserId(uuid!);
@@ -45,21 +33,6 @@ class MovieService {
       throw Exception('Failed to load movie recommendation');
     }
   }
-
-  static Future<List<Tv>> fetchTvRecommendation() async {
-    final response = await Supabase.instance.client.functions
-        .invoke('getTvRecommendation');
-    if (response.status == 200) {
-      var data = response.data;
-      List result = data;
-      return result.map((e) => Tv.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to load movie recommendation');
-    }
-  }
-
-
-
   static Future<List<Movie>> fetchSwipeMovieRecommendation(int movieCount) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     int user_id = await SupabaseAuthService().getUserId(uuid!);
@@ -70,20 +43,6 @@ class MovieService {
       var data = response.data;
       List result = data;
       return result.map((e) => Movie.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to load swipe movie recommendation');
-    }
-  }
-
-  static Future<List<Tv>> fetchSwipeTvRecommendation(int tvCount) async {
-    String? uuid = SupabaseAuthService().user?.userUuid;
-    final response = await Supabase.instance.client.functions.invoke(
-        'getSwipeRecommendationsMovie',
-        body: {'user_id': uuid, 'tv_count': tvCount});
-    if (response.status == 200) {
-      var data = response.data;
-      List result = data;
-      return result.map((e) => Tv.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load swipe movie recommendation');
     }

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../screens/profile.dart';
 
-class Header extends StatelessWidget {
+class HeaderSearch extends StatelessWidget {
 
-  const Header({super.key});
+  const HeaderSearch({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,20 +35,7 @@ class Header extends StatelessWidget {
             child: const Text('Serien'),
           ),
         ),
-        const SizedBox(width: 8),
-        // Platz für Profil-Icon
-        IconButton(
-          icon: const Icon(Icons.account_circle),
-          onPressed: () {
-            // Aktion bei Klick auf Profil-Icon
-            _navigateToProfile(context);
-          },
-          iconSize: 50,
-        ),
       ],
     );
-  }
-  void _navigateToProfile(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profile');
   }
 }

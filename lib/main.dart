@@ -2,6 +2,7 @@ import 'package:flasher_ui/src/screens/friends.dart';
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:flasher_ui/src/screens/movie_swipe.dart';
 import 'package:flasher_ui/src/screens/profile.dart';
+import 'package:flasher_ui/src/screens/search_result.dart';
 import 'package:flasher_ui/src/screens/settings.dart';
 import 'package:flasher_ui/src/screens/splash.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,7 @@ class App extends StatelessWidget {
         '/movieswipe': (_) => const MovieSwipe(),
         '/friends': (_) => const Friends(),
         '/settings': (_) => const Settings(),
+        '/search':(_) => const SearchPage(),
     }
     );
   }
