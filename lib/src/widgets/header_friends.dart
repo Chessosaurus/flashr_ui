@@ -17,6 +17,9 @@ class HeaderFriends extends StatelessWidget {
                 labelText: 'Suche nach Freunden',
                 prefixIcon: Icon(Icons.search),
               ),
+              onTap: (){
+                Navigator.of(context).pushReplacementNamed('/friend_search');
+              },
             ),
           ),
 

@@ -2,6 +2,8 @@ import 'package:flasher_ui/src/screens/friends.dart';
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:flasher_ui/src/screens/movie_swipe.dart';
 import 'package:flasher_ui/src/screens/profile.dart';
+import 'package:flasher_ui/src/screens/qr_code.dart';
+import 'package:flasher_ui/src/screens/search_friend_result.dart';
 import 'package:flasher_ui/src/screens/search_result.dart';
 import 'package:flasher_ui/src/screens/settings.dart';
 import 'package:flasher_ui/src/screens/groups.dart';
@@ -81,6 +83,8 @@ class App extends StatelessWidget {
         '/search':(_) => const SearchPage(),
         '/groups':(_) => const Groups(),
         '/requests':(_) => const Requests(),
+        '/qr_code':(_) => QRScreens(),
+      '/friend_search':(_) => SearchFriendPage(),
     }
     );
   }

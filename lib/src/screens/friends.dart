@@ -1,5 +1,6 @@
 import 'package:flasher_ui/src/screens/groups.dart';  // Importiere die Groups-Seite
 import 'package:flasher_ui/src/screens/profile.dart';
+import 'package:flasher_ui/src/services/friends_service.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flasher_ui/src/widgets/header_friends.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 
+import '../models/friend.dart';
 import '../widgets/category_section.dart';
 import '../widgets/navbar.dart';
 import '../widgets/friend_list_tile.dart';
@@ -17,12 +19,20 @@ import 'movie_swipe.dart';
 
 class Friends extends StatefulWidget {
   const Friends({super.key});
-
   @override
   State<Friends> createState() => _Friends();
 }
 
 class _Friends extends State<Friends> {
+
+  late Future<List<Friend>> friendList;
+
+  @override
+  void initState() {
+    super.initState();
+    friendList = FriendsService.getFriendsOfUser();
+  }
+
   int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
@@ -64,17 +74,28 @@ class _Friends extends State<Friends> {
               SizedBox(height: 20),
               HeaderFriends(),
               SizedBox(height: 20),
-              FriendListTile(
-                name: 'Tobias Hahn',
-              ),
-              FriendListTile(
-                name: 'Shaken Earth',
-              ),
-              FriendListTile(
-                name: 'Janosch Selbmann',
-              ),
-              FriendListTile(
-                name: 'Timo Zink',
+              FutureBuilder<List<Friend>>(
+                future: friendList,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final friends = snapshot.data!;
+                    return SizedBox(  // Wrap ListView.builder in SizedBox
+                      height: MediaQuery.of(context).size.height * 0.5, // Example height
+                      child: ListView.builder(
+                        shrinkWrap: true,  // Add shrinkWrap
+                        physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                        itemCount: friends.length,
+                        itemBuilder: (context, index) {
+                          return FriendListTile(name: friends[index].friendName);
+                        },
+                      ),
+                    );
+                  }},
               ),
             ],
           ),

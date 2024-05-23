@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 
+import '../models/friend.dart';
+import '../services/friends_service.dart';
 import '../widgets/category_section.dart';
 import '../widgets/navbar.dart';
 import '../widgets/friend_list_tile.dart';
@@ -20,6 +22,16 @@ class Requests extends StatefulWidget {
 }
 
 class _Requests extends State<Requests> {
+
+  late Future<List<Friend>> friendRequestsList;
+
+  @override
+  void initState() {
+    super.initState();
+    friendRequestsList = FriendsService.getFriendshipRequests();
+  }
+
+
   int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
@@ -67,11 +79,11 @@ class _Requests extends State<Requests> {
       ),
       */
 
-      body: const SingleChildScrollView(
+      body:  SingleChildScrollView(
         child: Padding(
             padding: EdgeInsets.all(20.0),
             child: Column(
-              children: <Widget> [
+              children:[
                 Text(
                   'Deine Anfragen',
                   style: TextStyle(
@@ -79,26 +91,29 @@ class _Requests extends State<Requests> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Suche nach Anfragen',
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                ),
-                SizedBox(height: 20),
-                FriendListTile(
-                  name: 'Tobias Hahn',
-                ),
-                FriendListTile(
-                  name: 'Shaken Earth',
-                ),
-                FriendListTile(
-                  name: 'Janosch Selbmann',
-                ),
-                FriendListTile(
-                  name: 'Timo Zink',
+                FutureBuilder<List<Friend>>(
+                  future: friendRequestsList,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final friends = snapshot.data!;
+                      return SizedBox(  // Wrap ListView.builder in SizedBox
+                        height: MediaQuery.of(context).size.height * 0.5, // Example height
+                        child: ListView.builder(
+                          shrinkWrap: true,  // Add shrinkWrap
+                          physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                          itemCount: friends.length,
+                          itemBuilder: (context, index) {
+                            return FriendListTile(name: friends[index].friendName);
+                          },
+                        ),
+                      );
+                    }},
                 ),
               ],
             )

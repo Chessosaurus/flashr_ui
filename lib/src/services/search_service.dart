@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/movie.dart';
 import '../models/tv.dart';
+import '../models/user_flashr.dart';
 
 class SearchService {
   SupabaseClient client = Supabase.instance.client;
@@ -28,6 +29,19 @@ class SearchService {
       return result.map((e) => Tv.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load movies');
+    }
+  }
+
+  static Future<List<UserFlashr>> fetchFriendsSearch(String searchTerm) async {
+    final response = await Supabase.instance.client.schema("persistence").rpc(
+        "search_for_friend",
+        params: { "input": searchTerm});
+    if (response != null) {
+      var data = response;
+      List result = data;
+      return result.map((e) => UserFlashr.fromJson(e)).toList();
+    } else {
+      return [];
     }
   }
 }

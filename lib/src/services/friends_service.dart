@@ -1,19 +1,18 @@
-import 'package:flasher_ui/src/models/user_flashr.dart';
 import 'package:flasher_ui/src/services/supabase_auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/group.dart';
+import '../models/friend.dart';
 
-class GroupService {
+class FriendsService {
   SupabaseClient client = Supabase.instance.client;
 
-  static Future<void> createGroup(String groupName) async {
+  static Future<void> acceptFriendship(int? friendId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
       int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "create_group",
-          params: { "user_id": userId, "group_name": groupName});
+          "user_friendship_accept",
+          params: { "friend_0": userId, "friend_1": friendId});
       if (response.status != 200) {
         throw Exception('Failed to create group');
       }
@@ -22,13 +21,13 @@ class GroupService {
     }
   }
 
-  static Future<void> deleteGroup(int groupId) async {
+  static Future<void> removeFriendship(int? friendId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
       int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "create_group",
-          params: { "user_id": userId, "group_id": groupId});
+          "user_friendship_remove",
+          params: { "friend_0": userId, "friend_1": friendId});
       if (response.status != 200) {
         throw Exception('Failed to create group');
       }
@@ -37,43 +36,51 @@ class GroupService {
     }
   }
 
-  static Future<void> addUserToGroup(int groupId) async {
+  static Future<void> requestFriendship(int? friendId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
       int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "add_user_to_group",
-          params: { "user_id": userId, "group_id": groupId});
+          "user_friendship_request",
+          params: { "friend_0": userId, "friend_1": friendId});
       if (response.status != 200) {
-        throw Exception('Failed to add User to group');
+        throw Exception('Failed to create group');
       }
     } else {
       throw Exception('Failed to get uuid');
     }
   }
 
-
-  static Future<void> removeUserFromGroup(int groupId, int userId) async {
-      final response = await Supabase.instance.client.schema("persistence").rpc(
-          "add_user_to_group",
-          params: { "user_id": userId, "group_id": groupId});
-      if (response.status != 200) {
-        throw Exception('Failed to add User to group');
-      }
-  }
-
-
-  static Future<List<Group>> getUsersGroups() async {
+  static Future<List<Friend>> getFriendsOfUser() async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
       int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_users_groups",
+          "get_friends_of_user",
           params: { "user_id": userId});
       if (response != null) {
         var data = response;
         List result = data;
-        return result.map((e) => Group.fromJson(e)).toList();
+        return result.map((e) => Friend.fromJson(e)).toList();
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception('Failed to get uuid');
+    }
+  }
+
+  static Future<List<Friend>> getFriendshipRequests() async {
+    String? uuid = SupabaseAuthService().user?.userUuid;
+    if (uuid != null) {
+      int userId = await SupabaseAuthService().getUserId(uuid);
+      final response = await Supabase.instance.client.schema("persistence").rpc(
+          "get_friendship_requests",
+          params: { "user_id": userId});
+      if (response != null) {
+        var data = response;
+        List result = data;
+        return result.map((e) => Friend.fromJson(e)).toList();
       } else {
         return [];
       }
@@ -83,20 +90,4 @@ class GroupService {
   }
 
 
-  static Future<List<UserFlashr>> getUsersOfGroup(int groupId) async {
-      final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_users_groups",
-          params: { "groupd_id": groupId});
-      if (response != null) {
-        var data = response;
-        List result = data;
-        return result.map((e) => UserFlashr.fromJson(e)).toList();
-      } else {
-        return [];
-      }
-  }
-
 }
-
-
-
