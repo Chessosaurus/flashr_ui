@@ -22,9 +22,6 @@ class RequestListTile extends StatelessWidget {
             itemBuilder: (context, index) {
               final user = users[index];
               return GestureDetector(
-                onTap: () {
-                  print('Tapped!');
-                },
                 child: Container(
                   margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(

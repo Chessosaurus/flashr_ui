@@ -21,7 +21,7 @@ class UserFlashr {
       userId: json['id']?.toInt() ?? 0,
       username: json['user_name'] ?? '',
       email: '',
-      friends: json['friends'] ?? '',
+      //friends: json['friends'] ?? '',
     );
   }
 
