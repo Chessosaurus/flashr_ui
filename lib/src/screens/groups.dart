@@ -1,5 +1,6 @@
 import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
+import 'package:flasher_ui/src/widgets/group_list_tile.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flasher_ui/src/widgets/header_friends.dart';
 import 'package:flutter/material.dart';
@@ -68,26 +69,15 @@ class _Groups extends State<Groups> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Suche nach Gruppen',
-                    prefixIcon: Icon(Icons.search),
-                  ),
+                GroupListTile(
+                  name: 'TFFT',
                 ),
-                SizedBox(height: 20),
-                FriendListTile(
-                  name: 'Tobias Hahn',
+                GroupListTile(
+                  name: 'Omegalul',
                 ),
-                FriendListTile(
-                  name: 'Shaken Earth',
-                ),
-                FriendListTile(
-                  name: 'Janosch Selbmann',
-                ),
-                FriendListTile(
-                  name: 'Timo Zink',
+                GroupListTile(
+                  name: 'Coole Filme hier',
                 ),
               ],
             )
