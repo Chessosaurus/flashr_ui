@@ -12,30 +12,30 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/swipe_icon.png')),
-            label: 'Swipe',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'Freunde',
-          ),
-        ],
-        currentIndex: selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        onTap: onItemTapped,
-        iconSize: 50,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        backgroundColor: Colors.black,
-      ),
+    // Determine the icon size based on the screen size
+    final double iconSize = MediaQuery.of(context).size.width > 600 ? 40 : 40;
+
+    return BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home, size: iconSize),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/icons/swipe_icon.png'), size: iconSize),
+          label: 'Swipe',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.group, size: iconSize),
+          label: 'Freunde',
+        ),
+      ],
+      currentIndex: selectedIndex,
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      onTap: onItemTapped,
+      showUnselectedLabels: false,
+      showSelectedLabels: false,
+      backgroundColor: Colors.black,
     );
   }
 }

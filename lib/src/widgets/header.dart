@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../screens/profile.dart';
+class Header extends StatefulWidget {
+  const Header({Key? key}) : super(key: key);
 
-class Header extends StatelessWidget {
+  @override
+  _HeaderState createState() => _HeaderState();
+}
 
-  const Header({super.key});
+class _HeaderState extends State<Header> {
+  int _selectedFilter = 0;
+
+  void _onFilterTapped(int index) {
+    setState(() {
+      _selectedFilter = index;
+    });
+  }
+
+  void _navigateToProfile(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed('/profile');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,42 +27,41 @@ class Header extends StatelessWidget {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              // Aktion beim Klick auf "Filme"
-
-            }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
+              _onFilterTapped(0);
+            },
             style: ElevatedButton.styleFrom(
               fixedSize: Size.fromHeight(40),
+              // Manually set the background color based on the selected state
+              backgroundColor: _selectedFilter == 0 ? Theme.of(context).colorScheme.primary : Colors.black,
+              foregroundColor: _selectedFilter == 0 ? Colors.white : Theme.of(context).colorScheme.primary, // Textfarbe des Buttons
             ),
-            child: const Text('Filme'),
+            child: Text('Filme'),
           ),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              // Aktion beim Klick auf "Serien"
-
-            }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
+              _onFilterTapped(1);
+            },
             style: ElevatedButton.styleFrom(
               fixedSize: const Size.fromHeight(40),
+              // Manually set the background color based on the selected state
+              backgroundColor: _selectedFilter == 1 ? Theme.of(context).colorScheme.primary : Colors.black,
+              foregroundColor: _selectedFilter == 1 ? Colors.white : Theme.of(context).colorScheme.primary, // Textfarbe des Buttons
             ),
             child: const Text('Serien'),
           ),
         ),
         const SizedBox(width: 8),
-        // Platz für Profil-Icon
         IconButton(
           icon: const Icon(Icons.account_circle),
           onPressed: () {
-            // Aktion bei Klick auf Profil-Icon
             _navigateToProfile(context);
           },
           iconSize: 50,
         ),
       ],
     );
-  }
-  void _navigateToProfile(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profile');
   }
 }

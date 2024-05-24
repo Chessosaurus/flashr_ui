@@ -1,19 +1,18 @@
-import 'package:flasher_ui/src/screens/friends.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flasher_ui/src/screens/login.dart';
 import 'package:flasher_ui/src/screens/home.dart';
-import 'package:flasher_ui/src/screens/movie_swipe.dart';
 import 'package:flasher_ui/src/screens/profile.dart';
-import 'package:flasher_ui/src/screens/qr_code.dart';
-import 'package:flasher_ui/src/screens/search_friend_result.dart';
-import 'package:flasher_ui/src/screens/search_result.dart';
+import 'package:flasher_ui/src/screens/movie_swipe.dart';
+import 'package:flasher_ui/src/screens/friends.dart';
 import 'package:flasher_ui/src/screens/settings.dart';
+import 'package:flasher_ui/src/screens/search_result.dart';
 import 'package:flasher_ui/src/screens/groups.dart';
 import 'package:flasher_ui/src/screens/requests.dart';
 import 'package:flasher_ui/src/screens/splash.dart';
-import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flasher_ui/src/screens/login.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:flasher_ui/src/screens/qr_code.dart';
+import 'package:flasher_ui/src/screens/search_friend_result.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,66 +29,46 @@ Future<void> main() async {
   );
 
   final supabase = Supabase.instance.client;
-  runApp( App(supabase: supabase));
+  runApp(App(supabase: supabase));
 }
 
 class App extends StatelessWidget {
   const App({Key? key, required this.supabase}) : super(key: key);
   final SupabaseClient supabase;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'flashr',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFF31531),
+        title: 'flashr',
+        theme: ThemeData(
+          colorScheme: const ColorScheme.dark(
+            primary: Color(0xFFF31531),
+          ),
+          scaffoldBackgroundColor: Colors.black,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          useMaterial3: true,
+          inputDecorationTheme: InputDecorationTheme(
+              contentPadding: EdgeInsets.symmetric(horizontal: 25),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50),
+              )
+          ),
         ),
-        scaffoldBackgroundColor: Colors.black, // Hintergrundfarbe
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        useMaterial3: true,
-        inputDecorationTheme: InputDecorationTheme(
-          contentPadding: EdgeInsets.symmetric(horizontal: 25), // Innenabstand anpassen
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-          )
-        ),
-
-      ),
-        initialRoute: '/', routes: <String, WidgetBuilder>{
-        '/': (_) => SplashPage(supabase: supabase),
-        '/login': (_) => LoginScreen(supabase: supabase),
-        '/homepage': (_) => HomePage(supabase: supabase),
-        '/profile': (_) => const ProfilePage(),
-        '/movieswipe': (_) => const MovieSwipe(),
-        '/friends': (_) => const Friends(),
-        '/settings': (_) => const Settings(),
-        '/search':(_) => const SearchPage(),
-        '/groups':(_) => const Groups(),
-        '/requests':(_) => const Requests(),
-        '/qr_code':(_) => QRScreens(),
-      '/friend_search':(_) => SearchFriendPage(),
-    }
+        initialRoute: '/',
+        routes: <String, WidgetBuilder>{
+          '/': (_) => SafeArea(child: SplashPage(supabase: supabase)),
+          '/login': (_) => SafeArea(child: LoginScreen(supabase: supabase)),
+          '/homepage': (_) => SafeArea(child: HomePage(supabase: supabase)),
+          '/profile': (_) => SafeArea(child: ProfilePage()),
+          '/movieswipe': (_) => SafeArea(child: MovieSwipe()),
+          '/friends': (_) => SafeArea(child: Friends()),
+          '/settings': (_) => SafeArea(child: Settings()),
+          '/search': (_) => SafeArea(child: SearchPage()),
+          '/groups': (_) => SafeArea(child: Groups()),
+          '/requests': (_) => SafeArea(child: Requests()),
+          '/qr_code': (_) => SafeArea(child: QRScreens()),
+          '/friend_search': (_) => SafeArea(child: SearchFriendPage()),
+        }
     );
   }
 }
-
-
-
-

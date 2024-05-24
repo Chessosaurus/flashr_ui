@@ -95,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -106,11 +107,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/logo/flashr_logo.png', width: 200),
-                    SizedBox(height: 100),
+                    Image.asset(
+                      'assets/logo/flashr_logo.png',
+                      width: MediaQuery.of(context).size.height * 0.25, // Adjusted width based on screen size
+                    ),
+                    SizedBox(height: 20), // Adjusted height
                     Text(
                       'Anmelden',
-                      style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
