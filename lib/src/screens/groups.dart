@@ -1,5 +1,6 @@
 import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
+import 'package:flasher_ui/src/widgets/friend_navbar.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flasher_ui/src/widgets/header_friends.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,13 @@ class _Groups extends State<Groups> {
         Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
+  }
+
+  int _selectedIndexFriends = 1;
+  void _onItemTappedFriends(int index){
+    setState(() {
+      _selectedIndexFriends = index; // Aktualisiere den Index der ausgewählten Seite
+    });
   }
 
   bool _showOverlay = false;
@@ -167,49 +175,9 @@ class _Groups extends State<Groups> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Aktion beim Klick auf "Freunde"
-                        Navigator.of(context).pushReplacementNamed(
-                            '/friends'); // Navigiere zur Groups-Seite
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size.fromHeight(40),
-                      ),
-                      child: const Text('Freunde'),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size.fromHeight(40),
-
-                      ),
-                      child: const Text('Gruppen'),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Aktion beim Klick auf "Anfragen"
-                        Navigator.of(context).pushReplacementNamed(
-                            '/requests'); // Navigiere zur Groups-Seite
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size.fromHeight(40),
-                      ),
-                      child: const Text('Anfragen'),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  // Platz für Profil-Icon
-                ],
+              child: FriendNavbar(
+                selectedIndex: _selectedIndexFriends,
+                onItemTapped: _onItemTappedFriends,
               ),
             ),
             NavBar(

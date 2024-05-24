@@ -29,7 +29,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/friends');
+            Navigator.of(context).pushReplacementNamed('/slide_to_friends');
           },
         ),
       ),

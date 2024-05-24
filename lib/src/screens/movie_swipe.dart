@@ -1,5 +1,8 @@
+import 'package:flasher_ui/src/widgets/donut_chart.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 
 import 'dart:math' as math;
 
@@ -180,7 +183,6 @@ class DraggableCard extends StatefulWidget {
   final Function onSwipe;
   final Function onTap;
   final AnimationController controller;
-  final double swipeThreshold = 100.0; // Anzahl der Pixel, um die Karte zu entfernen
   final double zIndex; // zIndex hinzufügen
 
   DraggableCard({
@@ -234,7 +236,7 @@ class _DraggableCardState extends State<DraggableCard> {
                 double deltaX = _position.dx - _startPosition.dx;
 
                 // Berechne den Abstand der Karte zur Bildschirmmitte
-                double distanceToCenter = (_position.dx + cardWidth / 2) - screenCenterX;
+                double distanceToCenter = (_position.dx + screenWidth / 2) - screenCenterX;
 
                 // Berechne den maximalen Neigungswinkel basierend auf der Distanz zur Mitte
                 double maxRotationAngle = math.pi / 8;
@@ -247,7 +249,7 @@ class _DraggableCardState extends State<DraggableCard> {
             double deltaX1 = _position.dx - _startPosition.dx;
             double deltaX2 = _startPosition.dx - _position.dx;
             double deltaY = _startPosition.dy - _position.dy;
-            if (widget.cardData.isFrontVisible && deltaX1 > widget.swipeThreshold) { //Überprüfung auf Rechts-Swipe
+            if (widget.cardData.isFrontVisible && deltaX1 > 100) { //Überprüfung auf Rechts-Swipe
               print("rechts");
               widget.onSwipe();
             }else if (widget.cardData.isFrontVisible && deltaX2 > 350){ //Überprüfung auf Links-Swipe
@@ -375,14 +377,32 @@ class CardBack extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, // Texte linksbündig ausrichten
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8), // Platz zwischen den Texten
+                        Align(
+                          alignment: Alignment.centerRight, // Text rechtsbündig ausrichten
+                          child: Text(
+                            DateFormat('dd.MM.yyyy').format(DateTime.parse(releaseDate)), // Datum im Format "dd.MM.yyyy"
+                            textAlign: TextAlign.right, // Rechts ausrichten
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
                     Text(
                       description,
@@ -393,21 +413,20 @@ class CardBack extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
+
                     Text(
-                      voteAverage.toString(),
+                      'Bewertung',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18.0,
-                        ),
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.bold
+
                       ),
-                        SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
-                        Text(
-                          releaseDate,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                          ),
-                        ),
+                    ),
+                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
+                    DonutChart(voteAverage: voteAverage),
+                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
                   ],
                 ),
               ),
@@ -442,5 +461,4 @@ class CardData {
       releaseDate: movie.releaseDate,
     )).toList();
   }
-
 }

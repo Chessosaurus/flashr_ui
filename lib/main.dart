@@ -1,5 +1,6 @@
 import 'package:flasher_ui/src/screens/friend_details.dart';
 import 'package:flasher_ui/src/screens/group_detail.dart';
+import 'package:flasher_ui/src/screens/movie_details.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -66,7 +67,7 @@ class App extends StatelessWidget {
           case '/homepage':
             return CustomPageRoute(builder: (_) => SafeArea(child: HomePage()));
           case '/profile':
-            return SlidePageRoute(builder: (_) => SafeArea(child: ProfilePage()));
+            return SlideUpPageRoute(builder: (_) => SafeArea(child: ProfilePage()));
           case '/movieswipe':
             return CustomPageRoute(builder: (_) => SafeArea(child: MovieSwipe()));
           case '/friends':
@@ -74,7 +75,7 @@ class App extends StatelessWidget {
           case '/settings':
             return CustomPageRoute(builder: (_) => SafeArea(child: Settings()));
           case '/search':
-            return SlidePageRoute(builder: (_) => SafeArea(child: SearchPage()));
+            return SlideUpPageRoute(builder: (_) => SafeArea(child: SearchPage()));
           case '/groups':
             return CustomPageRoute(builder: (_) => SafeArea(child: Groups()));
           case '/requests':
@@ -82,15 +83,15 @@ class App extends StatelessWidget {
           case '/qr_code':
             return CustomPageRoute(builder: (_) => SafeArea(child: QRScreens()));
           case '/friend_search':
-            return SlidePageRoute(builder: (_) => SafeArea(child: SearchFriendPage()));
+            return SlideUpPageRoute(builder: (_) => SafeArea(child: SearchFriendPage()));
           case '/slide_to_home':
             return SlideDownPageRoute(builder: (_) => SafeArea(child: HomePage()));
           case '/slide_to_friends':
             return SlideDownPageRoute(builder: (_) => SafeArea(child: Friends()));
           case '/group_detail':
-            return SlideDownPageRoute(builder: (_) => SafeArea(child: GroupDetailPage(groupId: 1,)));
+            return CustomPageRoute(builder: (_) => SafeArea(child: GroupDetailPage(groupId: 1,)));
           case '/friend_detail':
-            return SlideDownPageRoute(builder: (_) => SafeArea(child: FriendDetailPage()));
+            return SlideUpPageRoute(builder: (_) => SafeArea(child: FriendDetailPage()));
           default:
             return null;
         }
@@ -124,10 +125,10 @@ class CustomPageRoute<T> extends PageRoute<T> {
     );
   }
 }
-class SlidePageRoute<T> extends PageRouteBuilder<T> {
+class SlideUpPageRoute<T> extends PageRouteBuilder<T> {
   final WidgetBuilder builder;
 
-  SlidePageRoute({required this.builder})
+  SlideUpPageRoute({required this.builder})
       : super(
     pageBuilder: (context, animation, secondaryAnimation) => builder(context),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
