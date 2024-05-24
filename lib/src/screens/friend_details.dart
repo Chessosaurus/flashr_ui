@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/friend.dart';
+import '../models/movie.dart';
+import '../services/movie_service.dart';
 import '../widgets/category_section.dart';
 
 class FriendDetailPage extends StatefulWidget {
-  const FriendDetailPage({Key? key}) : super(key: key);
+  final Friend friend;
+  const FriendDetailPage({Key? key, required this.friend}) : super(key: key);
 
   @override
   State<FriendDetailPage> createState() => _FriendDetailPageState();
@@ -24,7 +28,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profil'),
+        title: Text('Profil von ' + widget.friend.friendName),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -36,7 +40,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: ProfileView(),
+          child: FriendView(friend: widget.friend),
         ),
       ),
     );
@@ -44,14 +48,24 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 }
 
 
-class ProfileView extends StatefulWidget {
+class FriendView extends StatefulWidget {
+  final Friend friend;
+  const FriendView({Key? key, required this.friend}) : super(key: key);
+
   @override
-  State<ProfileView> createState() => _ProfileViewState();
+  State<FriendView> createState() => _FriendViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
-  bool _isLoading = false;
-  final User? user = Supabase.instance.client.auth.currentUser;
+class _FriendViewState extends State<FriendView> {
+  late Future<List<Movie>> watchlist;
+  late Future<List<Movie>> recentlyWatchedList;
+
+  @override
+  void initState() {
+    super.initState();
+    watchlist = MovieService.fetchMovieWatchlistofFriend(widget.friend.friendId);
+    recentlyWatchedList = MovieService.fetchRecentlyWatchedMoviesofFriend(widget.friend.friendId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +81,7 @@ class _ProfileViewState extends State<ProfileView> {
           SizedBox(height: 20),
           Text(
             style: TextStyle(fontSize: 18), // Benutzername hier einfügen
-            user?.userMetadata?["username"] != null ? user!.userMetadata!['username'].toString(): "not defined",
+            "Favoriten von " + widget.friend.friendName
           ),
           SizedBox(height: 20),
           Row(
@@ -79,9 +93,37 @@ class _ProfileViewState extends State<ProfileView> {
             ],
           ),
           SizedBox(height: 40),
-          CategorySection(title: 'Watchlist', movies: []),
+          FutureBuilder<List<Movie>>(
+            future: watchlist,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return CategorySection(
+                  title: 'Seine Watchlist',
+                  movies: snapshot.data!,
+                );
+              }
+            },
+          ),
           SizedBox(height: 20),
-          CategorySection(title: 'Zuletzt gesehen', movies: [])
+          FutureBuilder<List<Movie>>(
+            future: recentlyWatchedList,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return CategorySection(
+                  title: 'Zuletzt gesehen',
+                  movies: snapshot.data!,
+                );
+              }
+            },
+          ),
         ],
       ),
     );

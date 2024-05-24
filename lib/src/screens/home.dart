@@ -20,12 +20,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future<List<Movie>> trendingMovies;
   late Future<List<Movie>> watchlist;
+  late Future<List<Movie>> recommendationMovies;
 
   @override
   void initState() {
     super.initState();
     trendingMovies = MovieService.fetchMoviesTrending(true);
     watchlist = MovieService.fetchMovieWatchlist();
+    recommendationMovies = MovieService.fetchMovieRecommendation();
+
   }
 
   int _selectedIndex = 0;
@@ -100,6 +103,21 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           return CategorySection(
                             title: 'Beliebte Filme',
+                            movies: snapshot.data!,
+                          );
+                        }
+                      },
+                    ),
+                    FutureBuilder<List<Movie>>(
+                      future: recommendationMovies,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return CategorySection(
+                            title: 'Für dich Empfohlen',
                             movies: snapshot.data!,
                           );
                         }

@@ -109,7 +109,9 @@ class _MovieDetailsState extends State<MovieDetails> with SingleTickerProviderSt
                     description: movie.overview,
                     posterPath: movie.posterPath,
                     voteAverage: movie.voteAverage,
-                    releaseDate: movie.releaseDate),
+                    releaseDate: movie.releaseDate,
+                    id: movie.id
+                ),
               ),
             ),
           ),

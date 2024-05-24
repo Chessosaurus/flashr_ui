@@ -101,11 +101,19 @@ class _Groups extends State<Groups> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        IconButton(
-                            onPressed: () {
-                              _toggleOverlay();
-                            },
-                            icon: Icon(Icons.add)),
+                        ElevatedButton(
+                          onPressed: () {
+                            _toggleOverlay();
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
+                            children: [
+                              Icon(Icons.add), // Dein Icon
+                              SizedBox(width: 8), // Ein kleiner Abstand zwischen Icon und Text
+                              Text('Gruppe erstellen'), // Dein Text
+                            ],
+                          ),
+                        ),
                         SizedBox(height: 20),
                         FutureBuilder<List<Group>>(
                           future: groupsOfUserList,
@@ -124,7 +132,7 @@ class _Groups extends State<Groups> {
                                   physics: const NeverScrollableScrollPhysics(), // Disable scrolling
                                   itemCount: groups.length,
                                   itemBuilder: (context, index) {
-                                    return GroupListTile(name: groups[index].name, groupId: groups[index].id,);
+                                    return GroupListTile(name: groups[index].name, group: groups[index],);
                                   },
                                 ),
                               );

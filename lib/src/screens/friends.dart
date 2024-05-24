@@ -99,7 +99,7 @@ class _Friends extends State<Friends> {
                         physics: const NeverScrollableScrollPhysics(), // Disable scrolling
                         itemCount: friends.length,
                         itemBuilder: (context, index) {
-                          return FriendListTile(name: friends[index].friendName);
+                          return FriendListTile(friend: friends[index]);
                         },
                       ),
                     );
@@ -126,10 +126,6 @@ class _Friends extends State<Friends> {
         ],
       ),
     );
-  }
-
-  void _navigateToProfile(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profile');
   }
 }
 

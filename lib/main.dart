@@ -88,10 +88,6 @@ class App extends StatelessWidget {
             return SlideDownPageRoute(builder: (_) => SafeArea(child: HomePage()));
           case '/slide_to_friends':
             return SlideDownPageRoute(builder: (_) => SafeArea(child: Friends()));
-          case '/group_detail':
-            return CustomPageRoute(builder: (_) => SafeArea(child: GroupDetailPage(groupId: 1,)));
-          case '/friend_detail':
-            return SlideUpPageRoute(builder: (_) => SafeArea(child: FriendDetailPage()));
           default:
             return null;
         }

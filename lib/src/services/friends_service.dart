@@ -43,7 +43,7 @@ class FriendsService {
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "user_friendship_request",
           params: { "friend_0": userId, "friend_1": friendId});
-      if (response.status != 200) {
+      if (response['status'] != 200) {
         throw Exception('Failed to send request');
       }
     } else {

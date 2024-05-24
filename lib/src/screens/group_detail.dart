@@ -1,43 +1,151 @@
+import 'package:flasher_ui/src/models/group.dart';
 import 'package:flasher_ui/src/models/user_flashr.dart';
-import 'package:flasher_ui/src/screens/groups.dart';  // Importiere die Groups-Seite
-import 'package:flasher_ui/src/screens/profile.dart';
-import 'package:flasher_ui/src/services/friends_service.dart';
 import 'package:flasher_ui/src/services/group_service.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
-import 'package:flasher_ui/src/widgets/header.dart';
-import 'package:flasher_ui/src/widgets/header_friends.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 
 import '../models/friend.dart';
-import '../widgets/category_section.dart';
-import '../widgets/navbar.dart';
-import '../widgets/friend_list_tile.dart';
-import 'home.dart';
-import 'movie_swipe.dart';
+import '../services/friends_service.dart';
+
 
 class GroupDetailPage extends StatefulWidget {
-  final int groupId;
-  const GroupDetailPage({super.key, required this.groupId});
+  final Group group;
+  const GroupDetailPage({super.key, required this.group});
   @override
-  State<GroupDetailPage> createState() => _GroupDetailPage(groupId: groupId);
+  State<GroupDetailPage> createState() => _GroupDetailPage();
 }
 
 class _GroupDetailPage extends State<GroupDetailPage> {
-  final groupId;
-  _GroupDetailPage({required this.groupId});
   late Future<List<UserFlashr>> groupMemberList;
+  late Future<List<Friend>> friendList;
 
   @override
   void initState() {
     super.initState();
-    groupMemberList = GroupService.getUsersOfGroup(26);
+    groupMemberList = GroupService.getUsersOfGroup(widget.group.id);
+    friendList = FriendsService.getFriendsOfUser();
   }
 
-  @override
+  bool _showOverlay = false;
+  final TextEditingController _groupNameController = TextEditingController();
+
+  void _toggleOverlay() {
+    setState(() {
+      _showOverlay = !_showOverlay;
+    });
+  }
+
+  Future<void> _addMemberToGroup(int userId) async {
+    try {
+      await GroupService.addUserToGroup(widget.group.id, userId);
+      setState(() { // Aktualisiere den Zustand, um die UI zu aktualisieren
+        groupMemberList = GroupService.getUsersOfGroup(widget.group.id);
+      });
+      _toggleOverlay(); // Overlay schließen nach erfolgreicher Erstellung
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Benutzer erfolgreich zur Gruppe hinzugefügt!')),
+      );
+    } catch (e) {
+      print('Fehler beim Entfernen des Benutzers: $e');
+      showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text('Fehler'),
+              content: Text(
+                  'Der Benutzer konnte nicht der Gruppe hinzugefügt werden.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+      );
+    }
+  }
+
+  Future<void> _removeUserFromGroup(int? userId) async {
+    try {
+      await GroupService.removeUserFromGroup(widget.group.id, userId);
+      setState(() { // Aktualisiere den Zustand, um die UI zu aktualisieren
+        Navigator.of(context).pushReplacementNamed('/groups');
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Benutzer erfolgreich aus der Gruppe entfernt!')),
+      );
+    } catch (e) {
+      print('Der Benutzer konnte nicht aus der Gruppe entfernt werden..: $e');
+      showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text('Fehler'),
+              content: Text(
+                  'Der Benutzer konnte nicht aus der Gruppe entfernt werden.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+      );
+    }
+  }
+
+  Future<void> _deleteGroup() async {
+    showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text('Gruppe wirklich löschen?'),
+            content: Text(
+                'Sind sie sich sicher das Sie die Gruppe löschen wollen?'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  try {
+                    await GroupService.deleteGroup(widget.group.id);
+                    setState(() { // Aktualisiere den Zustand, um die UI zu aktualisieren
+                      Navigator.of(context).pushReplacementNamed('/groups');
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Gruppe erfolgreich gelöscht!')),
+                    );
+                  } catch (e) {
+                    print('Fehler beim Löschen der Gruppe: $e');
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          AlertDialog(
+                            title: Text('Fehler'),
+                            content: Text(
+                                'Fehler beim Löschen der Gruppe.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('OK'),
+                              ),
+                            ],
+                          ),
+                    );
+                  }
+                },
+                child: Text('Ja'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Nein'),
+              ),
+            ],
+          ),
+    );
+  }
+
+
+      @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -50,12 +158,48 @@ class _GroupDetailPage extends State<GroupDetailPage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              SizedBox(height: 20),
+      body: Stack(
+          children: [
+      SingleChildScrollView(
+      child: Padding(
+      padding: EdgeInsets.all(20.0),
+      child: Column(
+        children: <Widget>[
+          Text(
+            widget.group.name,
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              _toggleOverlay();
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
+              children: [
+                Icon(Icons.add), // Dein Icon
+                SizedBox(width: 8), // Ein kleiner Abstand zwischen Icon und Text
+                Text('Mitglied hinzufügen'), // Dein Text
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _deleteGroup();
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
+              children: [
+                Icon(Icons.delete_forever), // Dein Icon
+                SizedBox(width: 8), // Ein kleiner Abstand zwischen Icon und Text
+                Text('Gruppe löschen'), // Dein Text
+              ],
+            ),
+          ),
+          SizedBox(height: 20),
               FutureBuilder<List<UserFlashr>>(
                 future: groupMemberList,
                 builder: (context, snapshot) {
@@ -73,7 +217,23 @@ class _GroupDetailPage extends State<GroupDetailPage> {
                         physics: const NeverScrollableScrollPhysics(), // Disable scrolling
                         itemCount: groupMembers.length,
                         itemBuilder: (context, index) {
-                          return FriendListTile(name: groupMembers[index].username.toString());
+                           return Container(
+                              margin: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3.0),
+                                border: Border.all(color: Colors.grey),
+                              ),
+                              child: ListTile(
+                                leading: Icon(Icons.person, size: 40.0),
+                                title: Text(groupMembers[index].username.toString(), style: TextStyle(fontSize: 18.0)),
+                                trailing: ElevatedButton(onPressed: () {
+                                  setState(() {
+                                    _removeUserFromGroup(groupMembers[index].userId);
+                                  });
+                                },
+                                  child:Icon(Icons.delete),),
+                              ),
+                          );
                         },
                       ),
                     );
@@ -83,7 +243,71 @@ class _GroupDetailPage extends State<GroupDetailPage> {
           ),
         ),
       ),
-      );
+            if (_showOverlay) // Overlay nur anzeigen, wenn _showOverlay true ist
+              Container(
+                color: Colors.black54, // Hintergrund abdunkeln
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    color: Colors.black,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FutureBuilder<List<Friend>>(
+                          future: friendList,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              final friends = snapshot.data!;
+                              return SizedBox(  // Wrap ListView.builder in SizedBox
+                                height: MediaQuery.of(context).size.height * 0.5, // Example height
+                                child: ListView.builder(
+                                  shrinkWrap: true,  // Add shrinkWrap
+                                  physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                                  itemCount: friends.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      margin: EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(3.0),
+                                        border: Border.all(color: Colors.grey),
+                                      ),
+                                      child: ListTile(
+                                        leading: Icon(Icons.person, size: 40.0),
+                                        title: Text(friends[index].friendName, style: TextStyle(fontSize: 18.0)),
+                                        trailing: ElevatedButton(onPressed: () {
+                                          _addMemberToGroup(friends[index].friendId);
+                                        },
+                                          child:Text("Hinzufügen"),),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            }},
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: _toggleOverlay, // Overlay schließen
+                              child: Text('Zurück'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ]
+      ),
+    );
   }
 
   void _navigateToProfile(BuildContext context) {

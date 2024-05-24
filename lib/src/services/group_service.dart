@@ -1,3 +1,5 @@
+
+
 import 'package:flasher_ui/src/models/user_flashr.dart';
 import 'package:flasher_ui/src/services/supabase_auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -27,37 +29,32 @@ class GroupService {
     if (uuid != null) {
       int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "create_group",
+          "delete_group",
           params: { "user_id": userId, "group_id": groupId});
       if (response.status != 200) {
-        throw Exception('Failed to create group');
+        throw Exception('Failed to delete group');
       }
     } else {
       throw Exception('Failed to get uuid');
     }
   }
 
-  static Future<void> addUserToGroup(int groupId) async {
-    String? uuid = SupabaseAuthService().user?.userUuid;
-    if (uuid != null) {
-      int userId = await SupabaseAuthService().getUserId(uuid);
+  static Future<void> addUserToGroup(int groupId, int userId) async {
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "add_user_to_group",
           params: { "user_id": userId, "group_id": groupId});
-      if (response.status != 200) {
+      if (response["status"] != 200) {
         throw Exception('Failed to add User to group');
       }
-    } else {
-      throw Exception('Failed to get uuid');
-    }
   }
 
 
-  static Future<void> removeUserFromGroup(int groupId, int userId) async {
+  static Future<void> removeUserFromGroup(int groupId, int? userId) async {
+    int id = userId!;
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "add_user_to_group",
-          params: { "user_id": userId, "group_id": groupId});
-      if (response.status != 200) {
+          "remove_user_from_group",
+          params: { "user_id": id, "group_id": groupId});
+      if (response["status"] != 200) {
         throw Exception('Failed to add User to group');
       }
   }

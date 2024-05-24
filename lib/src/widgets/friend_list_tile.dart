@@ -1,15 +1,22 @@
+import 'package:flasher_ui/src/models/friend.dart';
+import 'package:flasher_ui/src/screens/friend_details.dart';
 import 'package:flutter/material.dart';
 
 class FriendListTile extends StatelessWidget {
-  final String name;
+  final Friend friend;
 
-  const FriendListTile({Key? key, required this.name}) : super(key: key);
+  const FriendListTile({Key? key, required this.friend}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushReplacementNamed('/friend_detail');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FriendDetailPage(friend: friend),
+          ),
+        );;
       },
       child: Container(
         margin: EdgeInsets.all(8.0),
@@ -19,10 +26,10 @@ class FriendListTile extends StatelessWidget {
         ),
         child: ListTile(
           leading: Icon(Icons.person, size: 40.0),
-          title: Text(name, style: TextStyle(fontSize: 18.0)),
+          title: Text(friend.friendName, style: TextStyle(fontSize: 18.0)),
           trailing: Icon(Icons.chevron_right),
         ),
-      ),
+    ),
     );
   }
 }

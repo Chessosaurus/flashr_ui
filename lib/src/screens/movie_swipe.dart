@@ -1,3 +1,4 @@
+import 'package:flasher_ui/src/models/movie_extra.dart';
 import 'package:flasher_ui/src/widgets/donut_chart.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flutter/material.dart';
@@ -299,7 +300,7 @@ class _DraggableCardState extends State<DraggableCard> {
               ),
               child: widget.cardData.isFrontVisible
                   ? CardFront(title: widget.cardData.posterPath)
-                  : CardBack(title: widget.cardData.title, description: widget.cardData.description, posterPath: widget.cardData.posterPath, voteAverage: widget.cardData.voteAverage, releaseDate: widget.cardData.releaseDate),
+                  : CardBack(title: widget.cardData.title, description: widget.cardData.description, posterPath: widget.cardData.posterPath, voteAverage: widget.cardData.voteAverage, releaseDate: widget.cardData.releaseDate, id: widget.cardData.id),
             ),
           ),
         );
@@ -339,14 +340,28 @@ class CardFront extends StatelessWidget {
   }
 }
 
-class CardBack extends StatelessWidget {
+class CardBack extends StatefulWidget {
+  final int id;
   final String title;
   final String description;
   final String posterPath;
   final double voteAverage;
   final String releaseDate;
 
-  CardBack({required this.title, required this.description, required this.posterPath, required this.voteAverage, required this.releaseDate });
+  CardBack({required this.title, required this.description, required this.posterPath, required this.voteAverage, required this.releaseDate, required this.id });
+
+  @override
+  State<CardBack> createState() => _CardBackState();
+}
+
+class _CardBackState extends State<CardBack> {
+  List<MovieExtra> movieExtra = [];
+
+  @override
+  void initState() {
+    super.initState();
+    //MovieService.getExtraMovieInfo(widget.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -357,7 +372,7 @@ class CardBack extends StatelessWidget {
         children: [
           // Bild von der Vorderseite als Hintergrund
           Image.network(
-            'https://image.tmdb.org/t/p/w500$posterPath',
+            'https://image.tmdb.org/t/p/w500${widget.posterPath}',
             fit: BoxFit.cover,
           ),
           // Schwarze transparente Schicht
@@ -381,7 +396,7 @@ class CardBack extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start, // Texte linksbündig ausrichten
                       children: [
                         Text(
-                          title,
+                          widget.title,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28,
@@ -392,7 +407,7 @@ class CardBack extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerRight, // Text rechtsbündig ausrichten
                           child: Text(
-                            DateFormat('dd.MM.yyyy').format(DateTime.parse(releaseDate)), // Datum im Format "dd.MM.yyyy"
+                            DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.releaseDate)), // Datum im Format "dd.MM.yyyy"
                             textAlign: TextAlign.right, // Rechts ausrichten
                             style: TextStyle(
                               color: Colors.white,
@@ -405,7 +420,7 @@ class CardBack extends StatelessWidget {
 
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
                     Text(
-                      description,
+                      widget.description,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
@@ -425,7 +440,7 @@ class CardBack extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
-                    DonutChart(voteAverage: voteAverage),
+                    DonutChart(voteAverage: widget.voteAverage),
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
                   ],
                 ),

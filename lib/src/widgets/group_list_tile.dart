@@ -1,16 +1,24 @@
+import 'package:flasher_ui/src/screens/group_detail.dart';
 import 'package:flutter/material.dart';
+
+import '../models/group.dart';
 
 class GroupListTile extends StatelessWidget {
   final String name;
-  final int groupId;
+  final Group group;
 
-  const GroupListTile({Key? key, required this.name, required this.groupId}) : super(key: key);
+  const GroupListTile({Key? key, required this.name, required this.group}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          Navigator.of(context).pushReplacementNamed('/group_detail');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+              builder: (context) => GroupDetailPage(group: group),
+          ),
+          );
         },
     child: Container(
         margin: EdgeInsets.all(8.0),
