@@ -44,7 +44,7 @@ class FriendsService {
           "user_friendship_request",
           params: { "friend_0": userId, "friend_1": friendId});
       if (response.status != 200) {
-        throw Exception('Failed to create group');
+        throw Exception('Failed to send request');
       }
     } else {
       throw Exception('Failed to get uuid');

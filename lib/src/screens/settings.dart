@@ -111,6 +111,13 @@ class _SettingsState extends State<Settings> {
                   // Implementiere die Funktion zum Löschen des Kontos
                 },
               ),
+              SizedBox(height: 40),
+              Center(
+                child: Image.asset(
+                  'images/tmdb.png',
+                  width: MediaQuery.of(context).size.height * 0.15,
+                ),
+              ),
             ],
           ),
         ),

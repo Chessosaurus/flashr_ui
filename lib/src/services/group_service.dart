@@ -63,12 +63,12 @@ class GroupService {
   }
 
 
-  static Future<List<Group>> getUsersGroups() async {
+  static Future<List<Group>> getGroupsOfUsers() async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
       int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_users_groups",
+          "get_groups_of_user",
           params: { "user_id": userId});
       if (response != null) {
         var data = response;
@@ -84,9 +84,12 @@ class GroupService {
 
 
   static Future<List<UserFlashr>> getUsersOfGroup(int groupId) async {
+    if(groupId == 1){
+      return [];
+    }else{
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_users_groups",
-          params: { "groupd_id": groupId});
+          "get_users_of_group",
+          params: { "group_id": groupId});
       if (response != null) {
         var data = response;
         List result = data;
@@ -94,6 +97,8 @@ class GroupService {
       } else {
         return [];
       }
+    }
+
   }
 
 }

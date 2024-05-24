@@ -21,10 +21,6 @@ class _HeaderState extends State<Header> {
     Navigator.of(context).pushReplacementNamed('/profile');
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Row(

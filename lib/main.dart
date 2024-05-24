@@ -1,3 +1,5 @@
+import 'package:flasher_ui/src/screens/friend_details.dart';
+import 'package:flasher_ui/src/screens/group_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -85,6 +87,10 @@ class App extends StatelessWidget {
             return SlideDownPageRoute(builder: (_) => SafeArea(child: HomePage()));
           case '/slide_to_friends':
             return SlideDownPageRoute(builder: (_) => SafeArea(child: Friends()));
+          case '/group_detail':
+            return SlideDownPageRoute(builder: (_) => SafeArea(child: GroupDetailPage(groupId: 1,)));
+          case '/friend_detail':
+            return SlideDownPageRoute(builder: (_) => SafeArea(child: FriendDetailPage()));
           default:
             return null;
         }

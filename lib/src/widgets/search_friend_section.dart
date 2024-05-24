@@ -29,11 +29,7 @@ class SearchFriendSection extends StatelessWidget {
             itemCount: users.length, // Hier die Anzahl der Elemente eintragen
             itemBuilder: (context, index) {
               final user = users[index];
-              return GestureDetector(
-                onTap: () {
-                  print('Tapped!');
-                },
-                child: Container(
+                return Container(
                   margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(3.0),
@@ -47,8 +43,7 @@ class SearchFriendSection extends StatelessWidget {
                     },
                       child:Text("Hinzufügen"),),
                   ),
-                ),
-              );
+                );
             },
           ),
         ),

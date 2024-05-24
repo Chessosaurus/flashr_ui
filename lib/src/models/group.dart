@@ -13,8 +13,8 @@ class Group {
     return Group(
       id: json['id']?.toInt() ?? 0,
       name: json['name']?? '',
-      creatorId: json['user_id']?.toInt() ?? 0,
-      iconPath: json['poster_path'] ?? '',
+      creatorId: json['creator_id']?.toInt() ?? 0,
+      iconPath: json['icon_path'] ?? '',
 
     );
   }

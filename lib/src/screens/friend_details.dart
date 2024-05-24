@@ -5,33 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flasher_ui/src/screens/home.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/movie.dart';
-import '../services/movie_service.dart';
 import '../widgets/category_section.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class FriendDetailPage extends StatefulWidget {
+  const FriendDetailPage({Key? key}) : super(key: key);
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<FriendDetailPage> createState() => _FriendDetailPageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  final _auth = SupabaseAuthService();
-
-  Future<void> _signOut() async {
-    try{
-      await _auth.signOut();
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/login');
-      }
-    } on AuthException catch (error) {
-      context.showErrorSnackBar(message: error.message);
-    } catch (error) {
-      context.showErrorSnackBar(message: "Unexpected error occurred");
-    }
-  }
-
+class _FriendDetailPageState extends State<FriendDetailPage> {
   @override
   void initState() {
     super.initState();
@@ -46,18 +29,9 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Implementiere die Zurück-Funktion hier
-            _navigateBack(context);
+            Navigator.of(context).pushReplacementNamed('/friends');
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed:  (){
-              _navigateToSettings(context);
-            }
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -67,15 +41,8 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-
-  void _navigateBack(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/slide_to_home');
-  }
 }
 
-void _navigateToSettings(BuildContext context) {
-  Navigator.of(context).pushReplacementNamed('/settings');
-}
 
 class ProfileView extends StatefulWidget {
   @override
@@ -85,15 +52,6 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   bool _isLoading = false;
   final User? user = Supabase.instance.client.auth.currentUser;
-  late Future<List<Movie>> watchlist;
-  late Future<List<Movie>> recentlyWatchedList;
-
-  @override
-  void initState() {
-    super.initState();
-    watchlist = MovieService.fetchMovieWatchlist();
-    recentlyWatchedList = MovieService.fetchRecentlyWatchedMovies();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,37 +79,9 @@ class _ProfileViewState extends State<ProfileView> {
             ],
           ),
           SizedBox(height: 40),
-          FutureBuilder<List<Movie>>(
-            future: watchlist,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return CategorySection(
-                  title: 'Deine Watchlist',
-                  movies: snapshot.data!,
-                );
-              }
-            },
-          ),
+          CategorySection(title: 'Watchlist', movies: []),
           SizedBox(height: 20),
-          FutureBuilder<List<Movie>>(
-            future: recentlyWatchedList,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return CategorySection(
-                  title: 'Zuletzt gesehen',
-                  movies: snapshot.data!,
-                );
-              }
-            },
-          ),
+          CategorySection(title: 'Zuletzt gesehen', movies: [])
         ],
       ),
     );
@@ -176,4 +106,3 @@ class MoviePoster extends StatelessWidget {
     );
   }
 }
-

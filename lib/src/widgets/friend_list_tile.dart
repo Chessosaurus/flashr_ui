@@ -9,7 +9,7 @@ class FriendListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('Tapped!');
+        Navigator.of(context).pushReplacementNamed('/friend_detail');
       },
       child: Container(
         margin: EdgeInsets.all(8.0),
