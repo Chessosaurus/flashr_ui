@@ -1,3 +1,5 @@
+import 'package:flasher_ui/src/screens/friend_details.dart';
+import 'package:flasher_ui/src/screens/group_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,7 +60,7 @@ class App extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/': (_) => SafeArea(child: SplashPage(supabase: supabase)),
           '/login': (_) => SafeArea(child: LoginScreen(supabase: supabase)),
-          '/homepage': (_) => SafeArea(child: HomePage(supabase: supabase)),
+          '/homepage': (_) => SafeArea(child: HomePage()),
           '/profile': (_) => SafeArea(child: ProfilePage()),
           '/movieswipe': (_) => SafeArea(child: MovieSwipe()),
           '/friends': (_) => SafeArea(child: Friends()),
@@ -68,6 +70,8 @@ class App extends StatelessWidget {
           '/requests': (_) => SafeArea(child: Requests()),
           '/qr_code': (_) => SafeArea(child: QRScreens()),
           '/friend_search': (_) => SafeArea(child: SearchFriendPage()),
+          '/friend_detail': (_) => SafeArea(child: FriendDetailPage()),
+          '/group_detail': (_) => SafeArea(child: GroupDetailPage()),
         }
     );
   }
