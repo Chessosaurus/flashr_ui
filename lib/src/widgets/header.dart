@@ -1,3 +1,4 @@
+import 'package:flasher_ui/src/screens/movie_view.dart';
 import 'package:flutter/material.dart';
 
 class Header extends StatefulWidget {
@@ -19,6 +20,10 @@ class _HeaderState extends State<Header> {
   void _navigateToProfile(BuildContext context) {
     Navigator.of(context).pushReplacementNamed('/profile');
   }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {

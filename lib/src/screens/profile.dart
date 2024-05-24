@@ -67,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _navigateBack(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/homepage');
+    Navigator.of(context).pushReplacementNamed('/slide_to_home');
   }
 }
 
@@ -137,3 +137,4 @@ class MoviePoster extends StatelessWidget {
     );
   }
 }
+

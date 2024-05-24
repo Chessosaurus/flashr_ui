@@ -37,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/homepage');
+            Navigator.of(context).pushReplacementNamed('/slide_to_home');
           },
         ),
     ),
