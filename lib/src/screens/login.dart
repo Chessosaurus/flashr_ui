@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.supabase});
   final SupabaseClient supabase;
@@ -21,19 +20,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-
   @override
-  void dispose(){
+  void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+
   @override
   void initState() {
     widget.supabase.auth.onAuthStateChange.listen((data) {
-      if(_redirecting) return;
+      if (_redirecting) return;
       final session = data.session;
-      if(session != null) {
+      if (session != null) {
         _redirecting = true;
         Navigator.of(context).pushReplacementNamed('/homepage');
       }
@@ -42,8 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signIn() async {
-    try{
-      await widget.supabase.auth.signInWithPassword(email: _emailController.text, password: _passwordController.text);
+    try {
+      await widget.supabase.auth.signInWithPassword(
+          email: _emailController.text, password: _passwordController.text);
       if (mounted) {
         _emailController.clear();
         _passwordController.clear();
@@ -56,19 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
       context.showErrorSnackBar(message: "Unexpected error occurred");
     }
   }
+
   Future<AuthResponse> _googleSignIn() async {
-    /// TODO: update the Web client ID with your own.
-    ///
-    /// Web Client ID that you registered with Google Cloud.
     const webClientId = '350231170936-9etbngphcacguff0vughr37st6m4gtfa.apps.googleusercontent.com';
-
-    /// TODO: update the iOS client ID with your own.
-    ///
-    /// iOS Client ID that you registered with Google Cloud.
     const iosClientId = 'my-ios.apps.googleusercontent.com';
-
-    // Google sign in on Android will work without providing the Android
-    // Client ID registered on Google Cloud.
 
     final GoogleSignIn googleSignIn = GoogleSignIn(
       clientId: iosClientId,
@@ -92,103 +83,98 @@ class _LoginScreenState extends State<LoginScreen> {
       accessToken: accessToken,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/logo/flashr_logo.png',
-                      width: MediaQuery.of(context).size.height * 0.25, // Adjusted width based on screen size
-                    ),
-                    SizedBox(height: 20), // Adjusted height
-                    Text(
-                      'Anmelden',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+            Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.12), // Dynamically adjust the height
+                  Image.asset(
+                    'assets/logo/flashr_logo.png',
+                    width: MediaQuery.of(context).size.height * 0.25,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.06), // Dynamically adjust the height
+                  Text(
+                    'Anmelden',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextField(
-                      controller: _emailController,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        labelText: 'E-Mail',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    controller: _emailController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      labelText: 'E-Mail',
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: _passwordController,
+                    autofocus: true,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Passwort',
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        _navigateToResetPassword(context);
+                      },
+                      child: Text(
+                        'Passwort vergessen',
+                        style: TextStyle(fontSize: 12, color: Color(0xFFF31531)),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: _passwordController,
-                      autofocus: true,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Passwort',
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _googleSignIn,
+                    child: const Text('Google login'),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _signIn,
+                    child: Text('Log In'),
+                  ),
+                  SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Sie haben noch keinen Account? ',
+                        style: TextStyle(fontSize: 14),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: GestureDetector(
+                      GestureDetector(
                         onTap: () {
-                          _navigateToResetPassword(context);
+                          _navigateToSignUp(context);
                         },
                         child: Text(
-                          'Passwort vergessen',
-                          style: TextStyle(fontSize: 12, color: Color(0xFFF31531)),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                        onPressed: _googleSignIn,
-                        child: const Text('Google login')
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _signIn,
-                      child: Text('Log In'),
-                    ),
-                    SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment:  MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Sie haben noch keinen Account? ',
-                          style: TextStyle(fontSize: 14),
+                          ' Sign Up',
+                          style: TextStyle(fontSize: 14, color: Color(0xFFF31531)),
                           textAlign: TextAlign.center,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            _navigateToSignUp(context);
-                          },
-                          child: Text(
-                            ' Sign Up',
-                            style: TextStyle(fontSize: 14, color: Color(0xFFF31531)),
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                      )
+                    ],
+                  )
+                ],
               ),
             ),
           ],
