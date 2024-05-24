@@ -1,3 +1,4 @@
+import 'package:flasher_ui/src/services/supabase_auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/movie.dart';
@@ -33,15 +34,21 @@ class SearchService {
   }
 
   static Future<List<UserFlashr>> fetchFriendsSearch(String searchTerm) async {
-    final response = await Supabase.instance.client.schema("persistence").rpc(
-        "search_for_friend",
-        params: { "input": searchTerm});
-    if (response != null) {
-      var data = response;
-      List result = data;
-      return result.map((e) => UserFlashr.fromJson(e)).toList();
-    } else {
-      return [];
+    String? uuid = SupabaseAuthService().user?.userUuid;
+    if (uuid != null) {
+      int user_id = await SupabaseAuthService().getUserId(uuid);
+      final response = await Supabase.instance.client.schema("persistence").rpc(
+          "search_for_friend",
+          params: {"user_id": user_id, "input": searchTerm});
+      if (response != null) {
+        var data = response;
+        List result = data;
+        return result.map((e) => UserFlashr.fromJson(e)).toList();
+      } else {
+        return [];
+      }
+    }else {
+      throw Exception('Failed to get uuid');
     }
   }
 }
