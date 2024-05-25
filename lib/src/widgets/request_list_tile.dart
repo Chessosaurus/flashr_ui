@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../models/friend.dart';
 import '../models/user_flashr.dart';
 import '../services/friends_service.dart';
 
 class RequestListTile extends StatefulWidget {
-  final String name;
-  final List<UserFlashr> users;
+  final List<Friend> users;
 
-  const RequestListTile({Key? key, required this.name, required this.users}) : super(key: key);
+  const RequestListTile({Key? key, required this.users}) : super(key: key);
 
   @override
   State<RequestListTile> createState() => _RequestListTileState();
@@ -88,20 +88,20 @@ class _RequestListTileState extends State<RequestListTile> {
                   ),
                   child: ListTile(
                     leading: Icon(Icons.person, size: 40.0),
-                    title: Text(user.username as String, style: TextStyle(fontSize: 18.0)),
+                    title: Text(user.friendName, style: TextStyle(fontSize: 18.0)),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            _acceptFriendship(user.userId);
+                            _acceptFriendship(user.friendId);
                           },
                           child: Text("Annehmen"),
                         ),
                         SizedBox(width: 8), // Abstand zwischen den Buttons
                         ElevatedButton(
                           onPressed: () {
-                            _declineFriendship(user.userId); // Methode zum Ablehnen aufrufen
+                            _declineFriendship(user.friendId); // Methode zum Ablehnen aufrufen
                           },
                           child: Text("Ablehnen"),
                         ),

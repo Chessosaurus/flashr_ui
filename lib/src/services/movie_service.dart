@@ -10,7 +10,7 @@ class MovieService {
 
   static Future<List<Movie>> fetchMoviesTrending(bool daily) async {
     final response =
-        await Supabase.instance.client.functions.invoke('getTrendingMovies');
+    await Supabase.instance.client.functions.invoke('getTrendingMovies');
     if (response.status == 200) {
       var data = response.data;
       List result = data;
@@ -26,7 +26,8 @@ class MovieService {
     List<int> users = [];
     users.add(user_id);
     final response = await Supabase.instance.client.functions
-        .invoke('getMovieRecommendation', body: {'user_ids': users, 'index': 2});
+        .invoke(
+        'getMovieRecommendation', body: {'user_ids': users, 'index': 2});
     if (response.status == 200) {
       var data = response.data;
       List result = data;
@@ -35,7 +36,9 @@ class MovieService {
       throw Exception('Failed to load movie recommendation');
     }
   }
-  static Future<List<Movie>> fetchSwipeMovieRecommendation(int movieCount) async {
+
+  static Future<List<Movie>> fetchSwipeMovieRecommendation(
+      int movieCount) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     int user_id = await SupabaseAuthService().getUserId(uuid!);
     final response = await Supabase.instance.client.functions.invoke(
@@ -64,7 +67,7 @@ class MovieService {
       } else {
         return [];
       }
-    }else {
+    } else {
       throw Exception('Failed to get uuid');
     }
   }
@@ -83,7 +86,7 @@ class MovieService {
       } else {
         return [];
       }
-    }else {
+    } else {
       throw Exception('Failed to get uuid');
     }
   }
@@ -116,24 +119,28 @@ class MovieService {
     }
   }
 
-  static Future<void> setMovieStatusInterested(int movieId) async{
-      String? uuid = SupabaseAuthService().user?.userUuid;
-      if(uuid != null){
-        int user_id = await SupabaseAuthService().getUserId(uuid);
-        final response = await Supabase.instance.client.schema("persistence").rpc("movie_status_interested", params: { "user_id": user_id, "movie_id": movieId});
-        if (response != 200) {
-          throw Exception('Failed to set movie status');
-        }
-      } else {
-        throw Exception('Failed to get uuid');
+  static Future<void> setMovieStatusInterested(int movieId) async {
+    String? uuid = SupabaseAuthService().user?.userUuid;
+    if (uuid != null) {
+      int user_id = await SupabaseAuthService().getUserId(uuid);
+      final response = await Supabase.instance.client.schema("persistence").rpc(
+          "movie_status_interested",
+          params: { "user_id": user_id, "movie_id": movieId});
+      if (response != 200) {
+        throw Exception('Failed to set movie status');
       }
+    } else {
+      throw Exception('Failed to get uuid');
+    }
   }
 
-  static Future<void> setMovieStatusUninterested(int movieId) async{
+  static Future<void> setMovieStatusUninterested(int movieId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
-    if(uuid != null){
+    if (uuid != null) {
       int user_id = await SupabaseAuthService().getUserId(uuid);
-      final response = await Supabase.instance.client.schema("persistence").rpc("movie_status_uninterested", params: { "user_id": user_id, "movie_id": movieId});
+      final response = await Supabase.instance.client.schema("persistence").rpc(
+          "movie_status_uninterested",
+          params: { "user_id": user_id, "movie_id": movieId});
       if (response.status != 200) {
         throw Exception('Failed to set movie status');
       }
@@ -142,11 +149,13 @@ class MovieService {
     }
   }
 
-  static Future<void> removeMovieStatus(int movieId) async{
+  static Future<void> removeMovieStatus(int movieId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
-    if(uuid != null){
+    if (uuid != null) {
       int user_id = await SupabaseAuthService().getUserId(uuid);
-      final response = await Supabase.instance.client.schema("persistence").rpc("movie_status_remove", params: { "user_id": user_id, "movie_id": movieId});
+      final response = await Supabase.instance.client.schema("persistence").rpc(
+          "movie_status_remove",
+          params: { "user_id": user_id, "movie_id": movieId});
       if (response.status != 200) {
         throw Exception('Failed to set movie status');
       }
@@ -155,11 +164,13 @@ class MovieService {
     }
   }
 
-  static Future<void> setMovieStatusFavorite(int movieId) async{
+  static Future<void> setMovieStatusFavorite(int movieId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
-    if(uuid != null){
+    if (uuid != null) {
       int user_id = await SupabaseAuthService().getUserId(uuid);
-      final response = await Supabase.instance.client.schema("persistence").rpc("movie_status_favorite", params: { "user_id": user_id, "movie_id": movieId});
+      final response = await Supabase.instance.client.schema("persistence").rpc(
+          "movie_status_favorite",
+          params: { "user_id": user_id, "movie_id": movieId});
       if (response.status != 200) {
         throw Exception('Failed to set movie status');
       }
@@ -169,72 +180,73 @@ class MovieService {
   }
 
   static Future<List<Movie>> fetchMovieWatchlistofFriend(int userId) async {
-
-      final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_liked_movies_of_user",
-          params: { "user_id": userId,});
-      if (response != null) {
-        var data = response;
-        List result = data;
-        return result.map((e) => Movie.fromJson(e)).toList();
-      } else {
-        return [];
-      }
-  }
-  static Future<List<Movie>> fetchRecentlyWatchedMoviesofFriend(int userId) async {
-      final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_recently_watched_movies",
-          params: { "user_id": userId,});
-      if (response != null) {
-        var data = response;
-        List result = data;
-        return result.map((e) => Movie.fromJson(e)).toList();
-      } else {
-        return [];
-      }
+    final response = await Supabase.instance.client.schema("persistence").rpc(
+        "get_liked_movies_of_user",
+        params: { "user_id": userId,});
+    if (response != null) {
+      var data = response;
+      List result = data;
+      return result.map((e) => Movie.fromJson(e)).toList();
+    } else {
+      return [];
+    }
   }
 
-/*  static Future<List<MovieExtra>> getExtraMovieInfo(int movieId) async {
+  static Future<List<Movie>> fetchRecentlyWatchedMoviesofFriend(
+      int userId) async {
+    final response = await Supabase.instance.client.schema("persistence").rpc(
+        "get_recently_watched_movies",
+        params: { "user_id": userId,});
+    if (response != null) {
+      var data = response;
+      List result = data;
+      return result.map((e) => Movie.fromJson(e)).toList();
+    } else {
+      return [];
+    }
+  }
+
+  static Future<List<MovieExtra>> getExtraMovieInfo(int movieId) async {
     final response = await Supabase.instance.client.functions.invoke(
         'getExtraInfoMovie',
         body: {'movie_id': movieId}
     );
 
     if (response.status == 200) {
-        var data = response.data as List<dynamic>;
+      // Da die Response keine Liste, sondern ein einzelnes Map enthält
+      var data = response.data is String ? jsonDecode(response.data) as Map<String, dynamic> : response.data as Map<String, dynamic>;
 
-        List<MovieExtra> movieExtras = [];
-        for (var movieItem in data) {
-          try {
-            final movieJson = movieItem as Map<String, dynamic>;
+      List<MovieExtra> movieExtras = [];
 
-            // Extract and process watch_provider data
-            final watchProvider = movieJson['watch_provider'] as Map<String, dynamic>?;
-            final watchProviderLink = watchProvider?['link'] ?? '';
-            Map<String, dynamic>? flatrate = null;
-            if (watchProvider != null && watchProvider['flatrate'] != null && (watchProvider['flatrate'] as List).isNotEmpty) {
-              flatrate = watchProvider['flatrate'][0] as Map<String, dynamic>;
-            }
-
-            // Create MovieExtra object with the extracted data
-            movieExtras.add(MovieExtra(
-              runtime: movieJson['runtime'] ?? 0,
-              releaseDate: movieJson['release_date'] ?? '',
-              watchProviderLink: watchProviderLink,
-              flatrate: flatrate,
-            ));
-          } catch (e) {
-            // Handle parsing errors (log or throw a more specific exception)
-            print('Error parsing movie details: $e');
-            print('Movie Item: $movieItem');
-          }
+      try {
+        // Extract and process watch_provider data
+        final watchProvider = data['watch_provider'] as Map<String, dynamic>?;
+        final watchProviderLink = watchProvider?['link'] ?? '';
+        List<Map<String, dynamic>>? flatrateList = null;
+         if (watchProvider != null && watchProvider['flatrate'] != null &&
+            (watchProvider['flatrate'] as List).isNotEmpty) {
+          flatrateList =
+          List<Map<String, dynamic>>.from(watchProvider['flatrate']);
         }
-        return movieExtras;
-      } else {
-        throw Exception('Unexpected response format from Supabase function');
-      }
-  }*/
 
+        // Create MovieExtra object with the extracted data
+        movieExtras.add(MovieExtra(
+          runtime: data['runtime'] as int? ?? 0,
+          releaseDate: data['release_date'] as String? ?? '',
+          watchProviderLink: watchProviderLink,
+          flatrate: flatrateList,
+        ));
+      } catch (e) {
+        // Handle parsing errors (log or throw a more specific exception)
+        print('Error parsing movie details: $e');
+        print('Movie Item: $data');
+      }
+
+      return movieExtras;
+    } else {
+      throw Exception('Unexpected response format from Supabase function');
+    }
+  }
 }
 
 

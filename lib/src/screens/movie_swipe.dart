@@ -355,12 +355,12 @@ class CardBack extends StatefulWidget {
 }
 
 class _CardBackState extends State<CardBack> {
-  List<MovieExtra> movieExtra = [];
+  late Future<List<MovieExtra>> movieExtra;
 
   @override
   void initState() {
     super.initState();
-    //MovieService.getExtraMovieInfo(widget.id);
+    movieExtra = MovieService.getExtraMovieInfo(widget.id);
   }
 
   @override

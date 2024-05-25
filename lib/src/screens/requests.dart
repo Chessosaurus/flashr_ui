@@ -2,6 +2,7 @@ import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flasher_ui/src/widgets/header_friends.dart';
+import 'package:flasher_ui/src/widgets/request_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
@@ -116,7 +117,7 @@ class _Requests extends State<Requests> {
                           physics: const NeverScrollableScrollPhysics(), // Disable scrolling
                           itemCount: friends.length,
                           itemBuilder: (context, index) {
-                            return FriendListTile(friend:friends[index]);
+                            return RequestListTile(users:friends);
                           },
                         ),
                       );

@@ -55,7 +55,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // Get the size of the screen
     final screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
