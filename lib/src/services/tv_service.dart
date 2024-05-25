@@ -122,7 +122,7 @@ class TvService {
       String? uuid = SupabaseAuthService().user?.userUuid;
       if(uuid != null){
         int userId = await SupabaseAuthService().getUserId(uuid);
-        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_interested", params: { "tv:id": tvId, "user_id": userId});
+        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_interested", params: { "tv_id": tvId, "user_id": userId});
         if (response['status'] != 200) {
           throw Exception('Failed to set movie status');
         }
