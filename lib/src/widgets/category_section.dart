@@ -1,12 +1,12 @@
-import 'package:flasher_ui/src/models/movie.dart';
 import 'package:flasher_ui/src/screens/movie_details.dart';
 import 'package:flutter/material.dart';
+import '../models/media.dart';
 
 class CategorySection extends StatelessWidget {
   final String title;
-  final List<Movie> movies;
+  final List<Media> media;
 
-  const CategorySection({Key? key, required this.title, required this.movies}) : super(key: key);
+  const CategorySection({Key? key, required this.title, required this.media}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,35 +22,36 @@ class CategorySection extends StatelessWidget {
         ),
         SizedBox(
           height: 180,
-          child: movies.isEmpty ? Center(child: Text("Keine Filme verfügbar")) : ListView.builder(
+          child: media.isEmpty
+              ? const Center(child: Text("Keine Medien verfügbar"))
+              : ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: movies.length,
+            itemCount: media.length,
             itemBuilder: (context, index) {
-              final movie = movies[index];
+              final mediaItem = media[index];
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0, top: 8.0),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigate to MovieDetail screen and pass the movie object
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieDetails(movie: movie),
-                      ),
-                    );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetails(media: mediaItem),
+                        ),
+                      );
                   },
                   child: Container(
                     width: 120,
                     color: Colors.grey, // Placeholder
                     child: Column(
                       children: [
-                        // Display movie poster
-                        Image.network(
-                          'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                          width: 120,
-                          height: 172,
-                          fit: BoxFit.cover,
-                        ),
+                        // Poster optional anzeigen, falls vorhanden
+                        if (mediaItem.posterPath != null)
+                          Image.network(
+                            'https://image.tmdb.org/t/p/w500${mediaItem.posterPath}',
+                            width: 120,
+                            height: 172,
+                          ),
                       ],
                     ),
                   ),

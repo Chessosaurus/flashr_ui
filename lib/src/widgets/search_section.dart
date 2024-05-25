@@ -1,11 +1,14 @@
 import 'package:flasher_ui/src/models/movie.dart';
 import 'package:flutter/material.dart';
 
+import '../models/media.dart';
+
 class SearchSection extends StatelessWidget {
   final String title;
-  final List<Movie> movies;
+  final List<Media> medias;
 
-  const SearchSection({Key? key, required this.title, required this.movies}) : super(key: key);
+  const SearchSection({Key? key, required this.title, required this.medias})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +24,13 @@ class SearchSection extends StatelessWidget {
         ),
         SizedBox(
           height: 180,
-          child: movies.isEmpty ? Center(child: Text("Keine Suchergebnisse")) : ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: movies.length, // Hier die Anzahl der Elemente eintragen
-            itemBuilder: (context, index) {
-              final movie = movies[index];
+          child: medias.isEmpty
+              ? Center(child: Text("Keine Suchergebnisse"))
+              : ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: medias.length, // Hier die Anzahl der Elemente eintragen
+              itemBuilder: (context, index) {
+              final movie = medias[index];
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0, top: 8.0),
                 child: Container(

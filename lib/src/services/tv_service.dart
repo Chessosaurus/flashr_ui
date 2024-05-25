@@ -42,7 +42,7 @@ class TvService {
       String? uuid = SupabaseAuthService().user?.userUuid;
       int userId = await SupabaseAuthService().getUserId(uuid!);
       final response = await Supabase.instance.client.functions.invoke(
-          'getSwipeRecommendationsMovie',
+          'getSwipeRecommendationsTv',
           body: {'user_id': userId, 'tv_count': tvCount});
       if (response.status == 200) {
         var data = response.data;
@@ -57,7 +57,7 @@ class TvService {
       if (uuid != null) {
         int userId = await SupabaseAuthService().getUserId(uuid);
         final response = await Supabase.instance.client.schema("persistence").rpc(
-            "get_liked_tvs_of_user",
+            "get_liked_tv_of_user",
             params: { "user_id": userId,});
         if (response != null) {
           var data = response;
@@ -76,7 +76,7 @@ class TvService {
       if (uuid != null) {
         int userId = await SupabaseAuthService().getUserId(uuid);
         final response = await Supabase.instance.client.schema("persistence").rpc(
-            "get_recently_watched_tvs",
+            "get_recently_watched_tv",
             params: { "user_id": userId,});
         if (response != null) {
           var data = response;
@@ -109,7 +109,7 @@ class TvService {
         int userId = await SupabaseAuthService().getUserId(uuid);
         final response = await Supabase.instance.client.schema("persistence").rpc(
             "tv_status_watched",
-            params: { "user_id": userId, "movie_id": tvId});
+            params: { "user_id": userId, "tv_id": tvId});
         if (response['status'] != 200) {
           throw Exception('Failed to set movie status');
         }
@@ -122,7 +122,7 @@ class TvService {
       String? uuid = SupabaseAuthService().user?.userUuid;
       if(uuid != null){
         int userId = await SupabaseAuthService().getUserId(uuid);
-        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_interested", params: { "user_id": userId, "movie_id": tvId});
+        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_interested", params: { "user_id": userId, "tv:id": tvId});
         if (response['status'] != 200) {
           throw Exception('Failed to set movie status');
         }
@@ -135,7 +135,7 @@ class TvService {
       String? uuid = SupabaseAuthService().user?.userUuid;
       if(uuid != null){
         int userId= await SupabaseAuthService().getUserId(uuid);
-        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_uninterested", params: { "user_id": userId, "movie_id": tvId});
+        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_uninterested", params: { "user_id": userId, "tv_id": tvId});
         if (response['status'] != 200) {
           throw Exception('Failed to set movie status');
         }
@@ -148,7 +148,7 @@ class TvService {
       String? uuid = SupabaseAuthService().user?.userUuid;
       if(uuid != null){
         int userId = await SupabaseAuthService().getUserId(uuid);
-        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_remove", params: { "user_id": userId, "movie_id": tvId});
+        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_remove", params: { "user_id": userId, "tv_id": tvId});
         if (response['status'] != 200) {
           throw Exception('Failed to set movie status');
         }
@@ -161,7 +161,7 @@ class TvService {
       String? uuid = SupabaseAuthService().user?.userUuid;
       if(uuid != null){
         int userId = await SupabaseAuthService().getUserId(uuid);
-        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_favorite", params: { "user_id": userId, "movie_id": tvId});
+        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_favorite", params: { "user_id": userId, "tv_id": tvId});
         if (response['status'] != 200) {
           throw Exception('Failed to set movie status');
         }
@@ -172,7 +172,7 @@ class TvService {
 
     static Future<List<Tv>> fetchTVWatchlistOfFriend(int userId) async {
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_liked_tvs_of_user",
+          "get_liked_tv_of_user",
           params: { "user_id": userId,});
       if (response != null) {
         var data = response;
@@ -186,7 +186,7 @@ class TvService {
     static Future<List<Tv>> fetchRecentlyWatchedTVsOfFriend(
         int userId) async {
       final response = await Supabase.instance.client.schema("persistence").rpc(
-          "get_recently_watched_movies",
+          "get_recently_watched_tv",
           params: { "user_id": userId,});
       if (response != null) {
         var data = response;
@@ -197,10 +197,10 @@ class TvService {
       }
     }
 
-    static Future<List<TvExtra>> getExtraMovieInfo(int movieId) async {
+    static Future<List<TvExtra>> getExtraTvInfo(int tvId) async {
       final response = await Supabase.instance.client.functions.invoke(
-          'getExtraInfoMovie',
-          body: {'movie_id': movieId}
+          'getExtraInfoTv',
+          body: {'tv_id': tvId}
       );
 
       if (response.status == 200) {

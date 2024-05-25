@@ -1,7 +1,9 @@
+import 'package:flasher_ui/src/models/filter.dart';
 import 'package:flasher_ui/src/screens/friend_details.dart';
 import 'package:flasher_ui/src/screens/group_detail.dart';
 import 'package:flasher_ui/src/screens/movie_details.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flasher_ui/src/screens/login.dart';
@@ -32,7 +34,12 @@ Future<void> main() async {
   );
 
   final supabase = Supabase.instance.client;
-  runApp(App(supabase: supabase));
+  runApp(
+      ChangeNotifierProvider(
+          create: (context) => FilterModel(),
+          child: App(supabase: supabase),
+      ),
+  );
 }
 
 class App extends StatelessWidget {

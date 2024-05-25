@@ -1,4 +1,6 @@
-class Tv {
+import 'media.dart';
+
+class Tv implements Media {
   final String posterPath;
   final int id;
   final List<int>? genreIds;

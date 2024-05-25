@@ -1,5 +1,7 @@
+import 'package:flasher_ui/src/models/filter.dart';
 import 'package:flasher_ui/src/screens/movie_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Header extends StatefulWidget {
   const Header({Key? key}) : super(key: key);
@@ -12,6 +14,8 @@ class _HeaderState extends State<Header> {
   int _selectedFilter = 0;
 
   void _onFilterTapped(int index) {
+    Provider.of<FilterModel>(context, listen: false)
+        .setSelectedFilter(index == 0 ? FilterType.movies : FilterType.series);
     setState(() {
       _selectedFilter = index;
     });
@@ -44,6 +48,7 @@ class _HeaderState extends State<Header> {
           child: ElevatedButton(
             onPressed: () {
               _onFilterTapped(1);
+
             },
             style: ElevatedButton.styleFrom(
               fixedSize: const Size.fromHeight(40),

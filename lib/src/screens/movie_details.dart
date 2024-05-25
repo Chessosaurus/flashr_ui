@@ -1,24 +1,29 @@
 import 'package:flasher_ui/src/models/movie.dart';
 import 'package:flutter/material.dart';
 
+import '../models/media.dart';
+import '../models/media_extra.dart';
+import '../models/movie_extra.dart';
+import '../models/tv.dart';
+import '../services/movie_service.dart';
 import '../services/supabase_auth_service.dart';
+import '../services/tv_service.dart';
 import 'movie_swipe.dart';
 import 'dart:math' as math;
 
 class MovieDetails extends StatefulWidget {
-  const MovieDetails({Key? key, required this.movie}) : super(key: key);
+  final Media media;
 
-  final Movie movie;
+  const MovieDetails({Key? key, required this.media}) : super(key: key); // media statt movie
+
   @override
-  State<MovieDetails> createState() => _MovieDetailsState(movie);
+  State<MovieDetails> createState() => _MovieDetailsState();
 }
 
 class _MovieDetailsState extends State<MovieDetails> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final Movie movie; // Store the passed movie object
+  late Future<List<MediaExtra>> mediaExtra;
   bool isFrontVisible = true;
-
-  _MovieDetailsState(this.movie);
 
   @override
   void initState() {
@@ -27,7 +32,20 @@ class _MovieDetailsState extends State<MovieDetails> with SingleTickerProviderSt
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
+    mediaExtra = _fetchMediaExtra();
   }
+
+  Future<List<MediaExtra>> _fetchMediaExtra() async {
+    final mediaItem = widget.media;
+    if (mediaItem is Movie) {
+      return MovieService.getExtraMovieInfo(mediaItem.id);
+    } else if (mediaItem is Tv) {
+      return TvService.getExtraTvInfo(mediaItem.id); // Neue Methode in TvService
+    } else {
+      throw ArgumentError('Unsupported media type: ${mediaItem.runtimeType}');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +65,7 @@ class _MovieDetailsState extends State<MovieDetails> with SingleTickerProviderSt
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(movie.title),
+            title: Text(widget.media.title),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
@@ -103,18 +121,11 @@ class _MovieDetailsState extends State<MovieDetails> with SingleTickerProviderSt
                   ],
                 ),
                 child: isFrontVisible
-                    ? CardFront(title: movie.posterPath)
-                    : CardBack(
-                    title: movie.title,
-                    description: movie.overview,
-                    posterPath: movie.posterPath,
-                    voteAverage: movie.voteAverage,
-                    releaseDate: movie.releaseDate,
-                    id: movie.id
-                ),
+                    ? CardFront(title: widget.media.posterPath!)
+                    : CardBack(mediaItem: widget.media), // mediaExtra übergeben
+              ),
               ),
             ),
-          ),
         );
       },
     );

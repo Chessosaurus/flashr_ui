@@ -1,4 +1,6 @@
-class TvExtra {
+import 'media_extra.dart';
+
+class TvExtra implements MediaExtra  {
   final int runtime;
   final String releaseDate;
   final String watchProviderLink;

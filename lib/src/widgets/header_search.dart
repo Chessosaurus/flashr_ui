@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/filter.dart';
+
 class HeaderSearch extends StatefulWidget {
-  const HeaderSearch({Key? key}) : super(key: key);
+  final Function(FilterType) onFilterChanged; // Callback-Funktion hinzufügen
+
+  const HeaderSearch({Key? key, required this.onFilterChanged}) : super(key: key);
 
   @override
   _HeaderSearchState createState() => _HeaderSearchState();
@@ -14,6 +18,9 @@ class _HeaderSearchState extends State<HeaderSearch> {
     setState(() {
       _selectedButtonIndex = index;
     });
+
+    FilterType filterType = index == 0 ? FilterType.movies : FilterType.series;
+    widget.onFilterChanged(filterType);
   }
 
   @override

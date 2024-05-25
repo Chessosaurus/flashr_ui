@@ -1,16 +1,18 @@
 import 'dart:async';
-
 import 'package:flasher_ui/src/models/movie_extra.dart';
 import 'package:flasher_ui/src/widgets/donut_chart.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-
+import 'package:provider/provider.dart';
 import 'dart:math' as math;
-
+import '../models/filter.dart';
+import '../models/media.dart';
+import '../models/media_extra.dart';
 import '../models/movie.dart';
+import '../models/tv.dart';
 import '../services/movie_service.dart';
+import '../services/tv_service.dart';
 import '../widgets/navbar.dart';
 
 class MovieSwipe extends StatefulWidget {
@@ -33,31 +35,75 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
-    fetchMovieImages();
-    cards.addAll(CardData.fromMovies(movies));
+    //fetchMovieImages();
+    fetchMediaCards();
+    //cards.addAll(CardData.fromMovies(movies));
   }
 
-  Future<void> fetchMovieImages() async {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchMediaCards();
+  }
+
+  Future<void> fetchMediaCards() async {
     try {
-       movies = await MovieService.fetchSwipeMovieRecommendation(10);
-      setState(() {
-        cards.addAll(CardData.fromMovies(movies));
-      });
+      final filterModel = Provider.of<FilterModel>(context);
+
+      if (filterModel.selectedFilter == FilterType.movies) {
+        final movies = await MovieService.fetchSwipeMovieRecommendation(10);
+        setState(() {
+          cards = CardData.fromMedia(movies.cast<Media>());
+        });
+      } else {
+        final tvShows = await TvService.fetchSwipeTvRecommendation(10);
+        setState(() {
+          cards = CardData.fromMedia(tvShows.cast<Media>());
+        });
+      }
     } catch (e) {
-      print('Failed to fetch swipe movie recommendations: $e');
+      print('Failed to fetch media recommendations: $e');
     }
   }
 
-  Future<void> _setMovieStatusUninterested(int movieId) async {
-    MovieService.setMovieStatusUninterested(movieId);
+  Future<void> _setMovieStatusUninterested(Media mediaItem) async {
+    try {
+      if (mediaItem is Movie) {
+        await MovieService.setMovieStatusUninterested(mediaItem.id);
+      } else if (mediaItem is Tv) {
+        await TvService.setTVStatusUninterested(mediaItem.id);
+      }
+    } on Exception catch (error) {
+      _handleError('Fehler beim Setzen des Status auf "Uninteressiert"', error);
+    }
   }
 
-  Future<void> _setMovieStatusInterested (int movieId) async {
-    MovieService.setMovieStatusInterested(movieId);
+  Future<void> _setMovieStatusInterested(Media mediaItem) async {
+    try {
+      if (mediaItem is Movie) {
+        await MovieService.setMovieStatusInterested(mediaItem.id);
+      } else if (mediaItem is Tv) {
+        await TvService.setTVStatusInterested(mediaItem.id);
+      }
+    } on Exception catch (error) {
+      _handleError('Fehler beim Setzen des Status auf "Interessiert"', error);
+    }
   }
 
-  Future<void> _setMovieStatusWatched (int movieId) async {
-    MovieService.setMovieStatusWatched(movieId);
+  Future<void> _setMovieStatusWatched(Media mediaItem) async {
+    try {
+      if (mediaItem is Movie) {
+        await MovieService.setMovieStatusWatched(mediaItem.id);
+      } else if (mediaItem is Tv) {
+        await TvService.setTVStatusWatched(mediaItem.id);
+      }
+    } on Exception catch (error) {
+      _handleError('Fehler beim Setzen des Status auf "Gesehen"', error);
+    }
+  }
+
+  void _handleError(String message, Exception error) {
+    print('$message: $error');
   }
 
   int _selectedIndex = 1;
@@ -90,6 +136,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final filterModel = Provider.of<FilterModel>(context);
     return Scaffold(
       /*
       appBar: AppBar(
@@ -104,7 +151,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
           ),
           Expanded(
             child: Stack(
-              children: cards.asMap().entries.map((entry) { // Karten mit Index
+              children: cards.asMap().entries.map((entry) {
                 int index = entry.key;
                 CardData card = entry.value;
                 return DraggableCard(
@@ -113,7 +160,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     setState(() {
                       cards.removeAt(index); // Karte an bestimmtem Index entfernen
                       if (cards.length < 3) { // Wenn weniger als 5 Karten übrig sind
-                        fetchMovieImages(); // Neue Karten laden
+                        fetchMediaCards(); // Neue Karten laden
                       }
                     });
                   },
@@ -142,7 +189,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _setMovieStatusUninterested(cards.removeLast().id);
+                          _setMovieStatusUninterested(cards.removeLast().mediaItem);
                         });
                       },
                       style: ElevatedButton.styleFrom(
@@ -156,7 +203,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _setMovieStatusInterested(cards.removeLast().id);
+                          _setMovieStatusInterested(cards.removeLast().mediaItem);
                         });
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
                       style: ElevatedButton.styleFrom(
@@ -170,7 +217,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _setMovieStatusWatched(cards.removeLast().id);
+                          _setMovieStatusWatched(cards.removeLast().mediaItem);
                         });
 
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
@@ -221,27 +268,42 @@ class _DraggableCardState extends State<DraggableCard> {
   late Offset _position; // Aktuelle Position der Karte
   double _rotationAngle = 0.0; // Neigungswinkel der Karte
 
-  Future<void> _setMovieStatusUninterested(int movieId) async {
+  Future<void> _setMovieStatusUninterested(int mediaId) async {
     try {
-      await MovieService.setMovieStatusUninterested(movieId);
+      final mediaItem = widget.cardData.mediaItem;
+      if (mediaItem is Movie) {
+        await MovieService.setMovieStatusUninterested(mediaId);
+      } else if (mediaItem is Tv) {
+        await TvService.setTVStatusUninterested(mediaId);
+      }
     } on Exception catch (error) {
-      _handleError('Fehler beim Setzen des Filmstatus auf "Uninteressiert"', error);
+      _handleError('Fehler beim Setzen des Status auf "Uninteressiert"', error);
     }
   }
 
-  Future<void> _setMovieStatusInterested(int movieId) async {
+  Future<void> _setMovieStatusInterested(int mediaId) async {
     try {
-      await MovieService.setMovieStatusInterested(movieId);
+      final mediaItem = widget.cardData.mediaItem;
+      if (mediaItem is Movie) {
+        await MovieService.setMovieStatusInterested(mediaId);
+      } else if (mediaItem is Tv) {
+        await TvService.setTVStatusInterested(mediaId);
+      }
     } on Exception catch (error) {
-      _handleError('Fehler beim Setzen des Filmstatus auf "Interessiert"', error);
+      _handleError('Fehler beim Setzen des Status auf "Interessiert"', error);
     }
   }
 
-  Future<void> _setMovieStatusWatched(int movieId) async {
+  Future<void> _setMovieStatusWatched(int mediaId) async {
     try {
-      await MovieService.setMovieStatusWatched(movieId);
+      final mediaItem = widget.cardData.mediaItem;
+      if (mediaItem is Movie) {
+        await MovieService.setMovieStatusWatched(mediaId);
+      } else if (mediaItem is Tv) {
+        await TvService.setTVStatusWatched(mediaId);
+      }
     } on Exception catch (error) {
-      _handleError('Fehler beim Setzen des Filmstatus auf "Gesehen"', error);
+      _handleError('Fehler beim Setzen des Status auf "Gesehen"', error);
     }
   }
 
@@ -298,15 +360,15 @@ class _DraggableCardState extends State<DraggableCard> {
             double deltaY = _startPosition.dy - _position.dy;
             if (widget.cardData.isFrontVisible && deltaX1 > 100) { //Überprüfung auf Rechts-Swipe
               widget.onSwipe();
-              _setMovieStatusWatched(widget.cardData.id);
+              _setMovieStatusWatched(widget.cardData.mediaItem.id);
               print("rechts");
             }else if (widget.cardData.isFrontVisible && deltaX2 > 350){ //Überprüfung auf Links-Swipe
               widget.onSwipe();
-              _setMovieStatusUninterested(widget.cardData.id);
+              _setMovieStatusUninterested(widget.cardData.mediaItem.id);
               print("links");
             }else if (widget.cardData.isFrontVisible && deltaY > 700){ //Überprüfung auf Oben-Swipe
               widget.onSwipe();
-              _setMovieStatusInterested(widget.cardData.id);
+              _setMovieStatusInterested(widget.cardData.mediaItem.id);
               print("oben");
             }
 
@@ -347,9 +409,9 @@ class _DraggableCardState extends State<DraggableCard> {
                   ),
                 ],
               ),
-              child: widget.cardData.isFrontVisible
-                  ? CardFront(title: widget.cardData.posterPath)
-                  : CardBack(title: widget.cardData.title, description: widget.cardData.description, posterPath: widget.cardData.posterPath, voteAverage: widget.cardData.voteAverage, releaseDate: widget.cardData.releaseDate, id: widget.cardData.id),
+                child: widget.cardData.isFrontVisible
+                    ? CardFront(title: widget.cardData.mediaItem.posterPath)
+                    : CardBack(mediaItem: widget.cardData.mediaItem)
             ),
           ),
         );
@@ -360,7 +422,7 @@ class _DraggableCardState extends State<DraggableCard> {
 
 
 class CardFront extends StatelessWidget {
-  final String title;
+  final String? title;
 
   CardFront({required this.title});
 
@@ -390,26 +452,30 @@ class CardFront extends StatelessWidget {
 }
 
 class CardBack extends StatefulWidget {
-  final int id;
-  final String title;
-  final String description;
-  final String posterPath;
-  final double voteAverage;
-  final String releaseDate;
+  final Media mediaItem;
 
-  CardBack({required this.title, required this.description, required this.posterPath, required this.voteAverage, required this.releaseDate, required this.id });
+  const CardBack({Key? key, required this.mediaItem}) : super(key: key);
+
 
   @override
   State<CardBack> createState() => _CardBackState();
 }
 
 class _CardBackState extends State<CardBack> {
-  late Future<List<MovieExtra>> movieExtra;
+  late Future<List<MediaExtra>> mediaExtra;
 
   @override
   void initState() {
     super.initState();
-    movieExtra = MovieService.getExtraMovieInfo(widget.id);
+    // Überprüfen, ob es sich um einen Film handelt
+    if (widget.mediaItem is Movie) {
+      mediaExtra = MovieService.getExtraMovieInfo(widget.mediaItem.id);
+    } else if(widget.mediaItem is Tv){
+      mediaExtra = TvService.getExtraTvInfo(widget.mediaItem.id);
+    } else {
+      // Wenn es keine Serie ist, setze movieExtra auf ein leeres Future
+      mediaExtra = Future.value([]);
+    }
   }
 
   @override
@@ -421,7 +487,7 @@ class _CardBackState extends State<CardBack> {
         children: [
           // Bild von der Vorderseite als Hintergrund
           Image.network(
-            'https://image.tmdb.org/t/p/w500${widget.posterPath}',
+            'https://image.tmdb.org/t/p/w500${widget.mediaItem.posterPath}',
             fit: BoxFit.cover,
           ),
           // Schwarze transparente Schicht
@@ -445,7 +511,7 @@ class _CardBackState extends State<CardBack> {
                       crossAxisAlignment: CrossAxisAlignment.start, // Texte linksbündig ausrichten
                       children: [
                         Text(
-                          widget.title,
+                          widget.mediaItem.title,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28,
@@ -456,7 +522,7 @@ class _CardBackState extends State<CardBack> {
                         Align(
                           alignment: Alignment.centerRight, // Text rechtsbündig ausrichten
                           child: Text(
-                            DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.releaseDate)), // Datum im Format "dd.MM.yyyy"
+                            DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.mediaItem.releaseDate)), // Datum im Format "dd.MM.yyyy"
                             textAlign: TextAlign.right, // Rechts ausrichten
                             style: TextStyle(
                               color: Colors.white,
@@ -469,7 +535,7 @@ class _CardBackState extends State<CardBack> {
 
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
                     Text(
-                      widget.description,
+                      widget.mediaItem.overview,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
@@ -489,8 +555,16 @@ class _CardBackState extends State<CardBack> {
                       ),
                     ),
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
-                    DonutChart(voteAverage: widget.voteAverage),
+                    DonutChart(voteAverage: widget.mediaItem.voteAverage),
                     SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
+                    Text(
+                      widget.mediaItem.overview,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -505,24 +579,14 @@ class _CardBackState extends State<CardBack> {
 
 
 class CardData {
-  String title;
-  String description;
-  String posterPath;
-  double voteAverage;
-  String releaseDate;
+  String? posterPath; // Jetzt optional
   bool isFrontVisible;
-  int id;
+  Media mediaItem;
+  // Jetzt Media-Objekt
 
-  CardData({required this.id,required this.title, required this.description, this.isFrontVisible = true, required this.posterPath, required this.voteAverage, required this.releaseDate});
+  CardData({required this.mediaItem, this.isFrontVisible = true});
 
-  static List<CardData> fromMovies(List<Movie> movies) {
-    return movies.map((movie) => CardData(
-      id: movie.id,
-      title: movie.title,
-      description: movie.overview,
-      posterPath: movie.posterPath,
-      voteAverage: movie.voteAverage,
-      releaseDate: movie.releaseDate,
-    )).toList();
+  static List<CardData> fromMedia(List<Media> mediaList) {
+    return mediaList.map((media) => CardData(mediaItem: media)).toList();
   }
 }

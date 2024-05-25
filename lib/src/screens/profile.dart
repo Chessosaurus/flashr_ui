@@ -131,7 +131,7 @@ class _ProfileViewState extends State<ProfileView> {
               } else {
                 return CategorySection(
                   title: 'Deine Watchlist',
-                  movies: snapshot.data!,
+                  media: snapshot.data!,
                 );
               }
             },
@@ -147,7 +147,7 @@ class _ProfileViewState extends State<ProfileView> {
               } else {
                 return CategorySection(
                   title: 'Zuletzt gesehen',
-                  movies: snapshot.data!,
+                  media: snapshot.data!,
                 );
               }
             },

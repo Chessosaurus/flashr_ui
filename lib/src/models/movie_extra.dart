@@ -1,4 +1,6 @@
-class MovieExtra {
+import 'package:flasher_ui/src/models/media_extra.dart';
+
+class MovieExtra implements MediaExtra {
   final int runtime;
   final String releaseDate;
   final String watchProviderLink;

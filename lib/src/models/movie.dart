@@ -1,4 +1,6 @@
-class Movie {
+import 'media.dart';
+
+class Movie implements Media {
   final String posterPath;
   final int id;
   final List<int>? genreIds;

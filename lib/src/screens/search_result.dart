@@ -2,11 +2,12 @@ import 'package:flasher_ui/src/services/search_service.dart';
 import 'package:flasher_ui/src/widgets/header_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-
+import '../models/filter.dart';
+import '../models/media.dart';
 import '../models/movie.dart';
 import '../services/movie_service.dart';
-import '../widgets/category_section.dart';
 import '../widgets/search_section.dart';
 
 class SearchPage extends StatefulWidget {
@@ -17,22 +18,36 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late Future<List<Movie>> trendingMovies;
-  late Future<List<Movie>> searchResult;
+  late Future<List<Media>> searchResults;
   late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    trendingMovies =  MovieService.fetchMoviesTrending(true);
-    searchResult = SearchService.fetchMoviesSearch("");
+    searchResults = Future.value([]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final filterModel = Provider.of<FilterModel>(context);
+
+    void updateSearchResults(String query) {
+      if (query.isNotEmpty) {
+        setState(() {
+          searchResults = filterModel.selectedFilter == FilterType.movies
+              ? SearchService.fetchMoviesSearch(query)
+              : SearchService.fetchTvsSearch(query);
+        });
+      } else {
+        setState(() {
+          searchResults = Future.value([]);
+        });
+      }
+    }
+
     return Scaffold(
-    appBar: AppBar(
+      appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -40,58 +55,59 @@ class _SearchPageState extends State<SearchPage> {
             Navigator.of(context).pushReplacementNamed('/slide_to_home');
           },
         ),
-    ),
-    body: SingleChildScrollView(
-      child: Column( // Hier wurde das Column-Widget hinzugefügt
-        children: <Widget>[
-          SingleChildScrollView(
-            child: Padding(
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  HeaderSearch(),
-                  // Suchleiste
-                  SizedBox(
-                    height: 8,
+                  HeaderSearch(
+                    onFilterChanged: (newFilter) {
+                      updateSearchResults(_searchController.text);
+                    },
                   ),
+                  SizedBox(height: 8),
                   TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Suche nach Filmen,Genres etc.',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                    controller: _searchController,
-                    onChanged: (query){
-                      if(_searchController.text.isNotEmpty){
+                    onChanged: (query) {
+                      if (query.isNotEmpty) {
                         setState(() {
-                          searchResult = SearchService.fetchMoviesSearch(query);
+                          searchResults =
+                              filterModel.selectedFilter == FilterType.movies
+                                  ? SearchService.fetchMoviesSearch(query)
+                                  : SearchService.fetchTvsSearch(query);
+                        });
+                      } else {
+                        setState(() {
+                          searchResults = Future.value(
+                              []); // Bei leerer Suche, keine Ergebnisse
                         });
                       }
                     },
                   ),
-                  // Film Listenansichten
                   SizedBox(height: 20),
-                  FutureBuilder<List<Movie>>(
-                    future: searchResult,
+                  FutureBuilder<List<Media>>(
+                    future: searchResults,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
-                        return SearchSection(title: 'Top Ergebnisse',
-                            movies: snapshot.data!);
+                        return SearchSection(
+                          title: 'Top Ergebnisse',
+                          medias: snapshot.data!,
+                        );
                       }
                     },
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 }
-

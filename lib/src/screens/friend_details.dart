@@ -103,7 +103,7 @@ class _FriendViewState extends State<FriendView> {
               } else {
                 return CategorySection(
                   title: 'Seine Watchlist',
-                  movies: snapshot.data!,
+                  media: snapshot.data!,
                 );
               }
             },
@@ -119,7 +119,7 @@ class _FriendViewState extends State<FriendView> {
               } else {
                 return CategorySection(
                   title: 'Zuletzt gesehen',
-                  movies: snapshot.data!,
+                  media: snapshot.data!,
                 );
               }
             },
