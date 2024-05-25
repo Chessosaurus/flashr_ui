@@ -13,7 +13,7 @@ class FriendsService {
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "user_friendship_accept",
           params: { "friend_0": userId, "friend_1": friendId});
-      if (response.status != 200) {
+      if (response['status'] != 200) {
         throw Exception('Failed to create group');
       }
     } else {
@@ -28,7 +28,7 @@ class FriendsService {
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "user_friendship_remove",
           params: { "friend_0": userId, "friend_1": friendId});
-      if (response.status != 200) {
+      if (response['status'] != 200) {
         throw Exception('Failed to create group');
       }
     } else {

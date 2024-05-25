@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flasher_ui/src/models/movie_extra.dart';
 import 'package:flasher_ui/src/widgets/donut_chart.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
@@ -32,17 +34,30 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
       duration: Duration(milliseconds: 300),
     );
     fetchMovieImages();
+    cards.addAll(CardData.fromMovies(movies));
   }
 
   Future<void> fetchMovieImages() async {
     try {
        movies = await MovieService.fetchSwipeMovieRecommendation(10);
       setState(() {
-        cards = CardData.fromMovies(movies);
+        cards.addAll(CardData.fromMovies(movies));
       });
     } catch (e) {
       print('Failed to fetch swipe movie recommendations: $e');
     }
+  }
+
+  Future<void> _setMovieStatusUninterested(int movieId) async {
+    MovieService.setMovieStatusUninterested(movieId);
+  }
+
+  Future<void> _setMovieStatusInterested (int movieId) async {
+    MovieService.setMovieStatusInterested(movieId);
+  }
+
+  Future<void> _setMovieStatusWatched (int movieId) async {
+    MovieService.setMovieStatusWatched(movieId);
   }
 
   int _selectedIndex = 1;
@@ -89,15 +104,16 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
           ),
           Expanded(
             child: Stack(
-              children: cards.map((card) {
-                int index = cards.indexOf(card);
+              children: cards.asMap().entries.map((entry) { // Karten mit Index
+                int index = entry.key;
+                CardData card = entry.value;
                 return DraggableCard(
                   cardData: card,
                   onSwipe: () {
                     setState(() {
-                      cards.remove(card);
-                      if(cards.isEmpty){
-                        fetchMovieImages();
+                      cards.removeAt(index); // Karte an bestimmtem Index entfernen
+                      if (cards.length < 3) { // Wenn weniger als 5 Karten übrig sind
+                        fetchMovieImages(); // Neue Karten laden
                       }
                     });
                   },
@@ -112,7 +128,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     });
                   },
                   controller: _controller,
-                  zIndex: index.toDouble(),
+                  zIndex: (cards.length - index).toDouble(),
                    // Stelle die Karten im Stapel dar
                 );
               }).toList(),
@@ -126,7 +142,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          MovieService.setMovieStatusUninterested(cards.removeLast().id);
+                          _setMovieStatusUninterested(cards.removeLast().id);
                         });
                       },
                       style: ElevatedButton.styleFrom(
@@ -140,7 +156,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          MovieService.setMovieStatusInterested(cards.removeLast().id);
+                          _setMovieStatusInterested(cards.removeLast().id);
                         });
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
                       style: ElevatedButton.styleFrom(
@@ -154,7 +170,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          MovieService.setMovieStatusWatched(cards.removeLast().id);
+                          _setMovieStatusWatched(cards.removeLast().id);
                         });
 
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
@@ -198,10 +214,40 @@ class DraggableCard extends StatefulWidget {
   _DraggableCardState createState() => _DraggableCardState();
 }
 
+
+
 class _DraggableCardState extends State<DraggableCard> {
   late Offset _startPosition;
   late Offset _position; // Aktuelle Position der Karte
   double _rotationAngle = 0.0; // Neigungswinkel der Karte
+
+  Future<void> _setMovieStatusUninterested(int movieId) async {
+    try {
+      await MovieService.setMovieStatusUninterested(movieId);
+    } on Exception catch (error) {
+      _handleError('Fehler beim Setzen des Filmstatus auf "Uninteressiert"', error);
+    }
+  }
+
+  Future<void> _setMovieStatusInterested(int movieId) async {
+    try {
+      await MovieService.setMovieStatusInterested(movieId);
+    } on Exception catch (error) {
+      _handleError('Fehler beim Setzen des Filmstatus auf "Interessiert"', error);
+    }
+  }
+
+  Future<void> _setMovieStatusWatched(int movieId) async {
+    try {
+      await MovieService.setMovieStatusWatched(movieId);
+    } on Exception catch (error) {
+      _handleError('Fehler beim Setzen des Filmstatus auf "Gesehen"', error);
+    }
+  }
+
+  void _handleError(String message, Exception error) {
+    print('$message: $error');
+  }
 
   @override
   void initState() {
@@ -251,13 +297,16 @@ class _DraggableCardState extends State<DraggableCard> {
             double deltaX2 = _startPosition.dx - _position.dx;
             double deltaY = _startPosition.dy - _position.dy;
             if (widget.cardData.isFrontVisible && deltaX1 > 100) { //Überprüfung auf Rechts-Swipe
-              print("rechts");
               widget.onSwipe();
+              _setMovieStatusWatched(widget.cardData.id);
+              print("rechts");
             }else if (widget.cardData.isFrontVisible && deltaX2 > 350){ //Überprüfung auf Links-Swipe
               widget.onSwipe();
+              _setMovieStatusUninterested(widget.cardData.id);
               print("links");
             }else if (widget.cardData.isFrontVisible && deltaY > 700){ //Überprüfung auf Oben-Swipe
               widget.onSwipe();
+              _setMovieStatusInterested(widget.cardData.id);
               print("oben");
             }
 

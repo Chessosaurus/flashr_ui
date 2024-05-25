@@ -1,21 +1,21 @@
 class Tv {
   final String posterPath;
   final int id;
-  final List<int> genreIds;
+  final List<int>? genreIds;
   final String title;
   final double voteAverage;
   final String overview;
-  final String releasedate;
+  final String releaseDate;
 
 
   const Tv({
     required this.posterPath,
     required this.overview,
-    required this.releasedate,
     required this.voteAverage,
     required this.id,
-    required this.genreIds,
+    this.genreIds,
     required this.title,
+    required this.releaseDate,
   });
 
 
@@ -23,11 +23,11 @@ class Tv {
     return Tv(
       posterPath: json['poster_path'] ?? '',
       id: json['id']?.toInt() ?? 0,
-      genreIds: json['genre_ids'].cast<int>(),
+      //genreIds: json['genre_ids'].cast<int>(),
       title: json['title'] ?? '',
       voteAverage: json['vote_average']?.toDouble() ?? 0.0,
       overview: json['overview'] ?? '',
-      releasedate: json['release_date'] ?? '',
+      releaseDate: json['release_date'] ?? '',
     );
   }
 
@@ -39,7 +39,7 @@ class Tv {
       'title': title,
       'vote_average': voteAverage,
       'overview': overview,
-      'release_date': releasedate,
+      'release_date': releaseDate,
     };
   }
 

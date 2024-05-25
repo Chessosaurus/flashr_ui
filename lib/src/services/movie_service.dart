@@ -37,13 +37,12 @@ class MovieService {
     }
   }
 
-  static Future<List<Movie>> fetchSwipeMovieRecommendation(
-      int movieCount) async {
+  static Future<List<Movie>> fetchSwipeMovieRecommendation(int movieCount) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
-    int user_id = await SupabaseAuthService().getUserId(uuid!);
+    int userId = await SupabaseAuthService().getUserId(uuid!);
     final response = await Supabase.instance.client.functions.invoke(
         'getSwipeRecommendationsMovie',
-        body: {'user_id': user_id, 'movie_count': movieCount});
+        body: {'user_id': userId, 'movie_count': movieCount});
     if (response.status == 200) {
       var data = response.data;
       List result = data;
@@ -75,10 +74,10 @@ class MovieService {
   static Future<List<Movie>> fetchRecentlyWatchedMovies() async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
-      int user_id = await SupabaseAuthService().getUserId(uuid);
+      int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "get_recently_watched_movies",
-          params: { "user_id": user_id,});
+          params: { "user_id": userId,});
       if (response != null) {
         var data = response;
         List result = data;
@@ -107,11 +106,11 @@ class MovieService {
   static Future<void> setMovieStatusWatched(int movieId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
-      int user_id = await SupabaseAuthService().getUserId(uuid);
+      int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "movie_status_watched",
-          params: { "user_id": user_id, "movie_id": movieId});
-      if (response.status != 200) {
+          params: { "user_id": userId, "movie_id": movieId});
+      if (response['status'] != 200) {
         throw Exception('Failed to set movie status');
       }
     } else {
@@ -122,11 +121,11 @@ class MovieService {
   static Future<void> setMovieStatusInterested(int movieId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
-      int user_id = await SupabaseAuthService().getUserId(uuid);
+      int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "movie_status_interested",
-          params: { "user_id": user_id, "movie_id": movieId});
-      if (response != 200) {
+          params: { "user_id": userId, "movie_id": movieId});
+      if (response['status'] != 200) {
         throw Exception('Failed to set movie status');
       }
     } else {
@@ -141,7 +140,7 @@ class MovieService {
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "movie_status_uninterested",
           params: { "user_id": user_id, "movie_id": movieId});
-      if (response.status != 200) {
+      if (response['status'] != 200) {
         throw Exception('Failed to set movie status');
       }
     } else {
@@ -152,11 +151,11 @@ class MovieService {
   static Future<void> removeMovieStatus(int movieId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
-      int user_id = await SupabaseAuthService().getUserId(uuid);
+      int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "movie_status_remove",
-          params: { "user_id": user_id, "movie_id": movieId});
-      if (response.status != 200) {
+          params: { "user_id": userId, "movie_id": movieId});
+      if (response['status'] != 200) {
         throw Exception('Failed to set movie status');
       }
     } else {
@@ -167,11 +166,11 @@ class MovieService {
   static Future<void> setMovieStatusFavorite(int movieId) async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
-      int user_id = await SupabaseAuthService().getUserId(uuid);
+      int userId = await SupabaseAuthService().getUserId(uuid);
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "movie_status_favorite",
-          params: { "user_id": user_id, "movie_id": movieId});
-      if (response.status != 200) {
+          params: { "user_id": userId, "movie_id": movieId});
+      if (response['status'] != 200) {
         throw Exception('Failed to set movie status');
       }
     } else {

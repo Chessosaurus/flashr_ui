@@ -16,7 +16,7 @@ class GroupService {
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "create_group",
           params: { "user_id": userId, "group_name": groupName});
-      if (response.status != 200) {
+      if (response['status'] != 200) {
         throw Exception('Failed to create group');
       }
     } else {
@@ -31,7 +31,7 @@ class GroupService {
       final response = await Supabase.instance.client.schema("persistence").rpc(
           "delete_group",
           params: { "user_id": userId, "group_id": groupId});
-      if (response.status != 200) {
+      if (response['status'] != 200) {
         throw Exception('Failed to delete group');
       }
     } else {
