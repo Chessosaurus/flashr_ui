@@ -22,7 +22,8 @@ class MovieSwipe extends StatefulWidget {
   State<MovieSwipe> createState() => _MovieSwipeState();
 }
 
-class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateMixin {
+class _MovieSwipeState extends State<MovieSwipe>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   List<String> movieImages = [];
   List<Movie> movies = [];
@@ -35,9 +36,6 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
-    //fetchMovieImages();
-    fetchMediaCards();
-    //cards.addAll(CardData.fromMovies(movies));
   }
 
   @override
@@ -114,15 +112,15 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
     // Hier füge deine Navigationslogik hinzu, basierend auf dem ausgewählten Index
     switch (index) {
       case 0:
-      // Navigation zur Startseite
+        // Navigation zur Startseite
         Navigator.of(context).pushReplacementNamed('/homepage');
         break;
       case 1:
-      // Navigation zu den Favoriten
+        // Navigation zu den Favoriten
         Navigator.of(context).pushReplacementNamed('/movieswipe');
         break;
       case 2:
-      // Navigation zum Profil
+        // Navigation zum Profil
         Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
@@ -158,8 +156,10 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                   cardData: card,
                   onSwipe: () {
                     setState(() {
-                      cards.removeAt(index); // Karte an bestimmtem Index entfernen
-                      if (cards.length < 3) { // Wenn weniger als 5 Karten übrig sind
+                      cards.removeAt(
+                          index); // Karte an bestimmtem Index entfernen
+                      if (cards.length < 3) {
+                        // Wenn weniger als 5 Karten übrig sind
                         fetchMediaCards(); // Neue Karten laden
                       }
                     });
@@ -176,7 +176,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                   },
                   controller: _controller,
                   zIndex: (cards.length - index).toDouble(),
-                   // Stelle die Karten im Stapel dar
+                  // Stelle die Karten im Stapel dar
                 );
               }).toList(),
             ),
@@ -189,13 +189,17 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _setMovieStatusUninterested(cards.removeLast().mediaItem);
+                          _setMovieStatusUninterested(
+                              cards.removeLast().mediaItem);
                         });
                       },
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size.fromHeight(40),
                       ),
-                      child: const Text('Nicht interessiert', textAlign: TextAlign.center,),
+                      child: const Text(
+                        'Nicht interessiert',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -203,7 +207,8 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _setMovieStatusInterested(cards.removeLast().mediaItem);
+                          _setMovieStatusInterested(
+                              cards.removeLast().mediaItem);
                         });
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
                       style: ElevatedButton.styleFrom(
@@ -219,7 +224,6 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                         setState(() {
                           _setMovieStatusWatched(cards.removeLast().mediaItem);
                         });
-
                       }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
                       style: ElevatedButton.styleFrom(
                         fixedSize: const Size.fromHeight(40),
@@ -230,8 +234,7 @@ class _MovieSwipeState extends State<MovieSwipe> with SingleTickerProviderStateM
                   const SizedBox(width: 8),
                   // Platz für Profil-Icon
                 ],
-              )
-          )
+              ))
         ],
       ),
       bottomNavigationBar: NavBar(
@@ -260,8 +263,6 @@ class DraggableCard extends StatefulWidget {
   @override
   _DraggableCardState createState() => _DraggableCardState();
 }
-
-
 
 class _DraggableCardState extends State<DraggableCard> {
   late Offset _startPosition;
@@ -340,16 +341,19 @@ class _DraggableCardState extends State<DraggableCard> {
           },
           onPanUpdate: (details) {
             setState(() {
-              if (widget.cardData.isFrontVisible){
-                _position += details.delta; // Aktualisiere die Position basierend auf der Verschiebung
+              if (widget.cardData.isFrontVisible) {
+                _position += details
+                    .delta; // Aktualisiere die Position basierend auf der Verschiebung
                 double deltaX = _position.dx - _startPosition.dx;
 
                 // Berechne den Abstand der Karte zur Bildschirmmitte
-                double distanceToCenter = (_position.dx + screenWidth / 2) - screenCenterX;
+                double distanceToCenter =
+                    (_position.dx + screenWidth / 2) - screenCenterX;
 
                 // Berechne den maximalen Neigungswinkel basierend auf der Distanz zur Mitte
                 double maxRotationAngle = math.pi / 8;
-                double normalizedDistance = distanceToCenter / (screenWidth / 2);
+                double normalizedDistance =
+                    distanceToCenter / (screenWidth / 2);
                 _rotationAngle = normalizedDistance * maxRotationAngle;
               }
             });
@@ -358,15 +362,18 @@ class _DraggableCardState extends State<DraggableCard> {
             double deltaX1 = _position.dx - _startPosition.dx;
             double deltaX2 = _startPosition.dx - _position.dx;
             double deltaY = _startPosition.dy - _position.dy;
-            if (widget.cardData.isFrontVisible && deltaX1 > 100) { //Überprüfung auf Rechts-Swipe
+            if (widget.cardData.isFrontVisible && deltaX1 > 100) {
+              //Überprüfung auf Rechts-Swipe
               widget.onSwipe();
               _setMovieStatusWatched(widget.cardData.mediaItem.id);
               print("rechts");
-            }else if (widget.cardData.isFrontVisible && deltaX2 > 350){ //Überprüfung auf Links-Swipe
+            } else if (widget.cardData.isFrontVisible && deltaX2 > 350) {
+              //Überprüfung auf Links-Swipe
               widget.onSwipe();
               _setMovieStatusUninterested(widget.cardData.mediaItem.id);
               print("links");
-            }else if (widget.cardData.isFrontVisible && deltaY > 700){ //Überprüfung auf Oben-Swipe
+            } else if (widget.cardData.isFrontVisible && deltaY > 700) {
+              //Überprüfung auf Oben-Swipe
               widget.onSwipe();
               _setMovieStatusInterested(widget.cardData.mediaItem.id);
               print("oben");
@@ -387,39 +394,38 @@ class _DraggableCardState extends State<DraggableCard> {
                 child: Transform.translate(
                   offset: _position, // Aktuelle Position der Karte
                   child: Transform.rotate(
-                    angle: _rotationAngle, // Dynamisch berechneter Neigungswinkel
+                    angle:
+                        _rotationAngle, // Dynamisch berechneter Neigungswinkel
                     child: child,
                   ),
                 ),
               );
             },
             child: Container(
-              width: cardWidth,
-              height: cardHeight,
-              margin: EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
+                width: cardWidth,
+                height: cardHeight,
+                margin: EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
                 child: widget.cardData.isFrontVisible
                     ? CardFront(title: widget.cardData.mediaItem.posterPath)
-                    : CardBack(mediaItem: widget.cardData.mediaItem)
-            ),
+                    : CardBack(mediaItem: widget.cardData.mediaItem)),
           ),
         );
       },
     );
   }
 }
-
 
 class CardFront extends StatelessWidget {
   final String? title;
@@ -430,7 +436,8 @@ class CardFront extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0), // abgerundete Ecken der Karte
+        borderRadius:
+            BorderRadius.circular(15.0), // abgerundete Ecken der Karte
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -440,11 +447,13 @@ class CardFront extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect( // um die abgerundeten Ecken zu behalten
+      child: ClipRRect(
+        // um die abgerundeten Ecken zu behalten
         borderRadius: BorderRadius.circular(15.0),
         child: Image.network(
           'https://image.tmdb.org/t/p/w500${title}',
-          fit: BoxFit.cover, // das Bild so skalieren, dass es die komplette Fläche abdeckt
+          fit: BoxFit
+              .cover, // das Bild so skalieren, dass es die komplette Fläche abdeckt
         ),
       ),
     );
@@ -456,13 +465,12 @@ class CardBack extends StatefulWidget {
 
   const CardBack({Key? key, required this.mediaItem}) : super(key: key);
 
-
   @override
   State<CardBack> createState() => _CardBackState();
 }
 
 class _CardBackState extends State<CardBack> {
-  late Future<List<MediaExtra>> mediaExtra;
+  late Future<MediaExtra> mediaExtra;
 
   @override
   void initState() {
@@ -470,113 +478,143 @@ class _CardBackState extends State<CardBack> {
     // Überprüfen, ob es sich um einen Film handelt
     if (widget.mediaItem is Movie) {
       mediaExtra = MovieService.getExtraMovieInfo(widget.mediaItem.id);
-    } else if(widget.mediaItem is Tv){
+    } else if (widget.mediaItem is Tv) {
       mediaExtra = TvService.getExtraTvInfo(widget.mediaItem.id);
     } else {
-      // Wenn es keine Serie ist, setze movieExtra auf ein leeres Future
-      mediaExtra = Future.value([]);
+      mediaExtra = Future.value(MovieExtra(
+        runtime: 0,
+        releaseDate: '',
+        watchProviderLink: '',
+        flatrate: [],
+      ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(15.0), // Abgerundete Ecken der Karte beibehalten
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Bild von der Vorderseite als Hintergrund
-          Image.network(
-            'https://image.tmdb.org/t/p/w500${widget.mediaItem.posterPath}',
-            fit: BoxFit.cover,
-          ),
-          // Schwarze transparente Schicht
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.9), // Schwarze transparente Farbe
-            ),
-          ),
-          // Textinhalt zentriert auf der Karte
-          Align(
-            alignment: Alignment.topCenter,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(20.0),
-              child: Transform(
-                transform: Matrix4.rotationY(math.pi), // Drehung um die Y-Achse um 180 Grad (pi Radiant)
-                alignment: Alignment.center,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start, // Texte linksbündig ausrichten
-                      children: [
-                        Text(
-                          widget.mediaItem.title,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
+      borderRadius: BorderRadius.circular(15.0),
+      child: FutureBuilder<MediaExtra>(
+        // FutureBuilder für mediaExtra
+        future: mediaExtra,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child: CircularProgressIndicator()); // Ladeanzeige
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text('Fehler: ${snapshot.error}')); // Fehleranzeige
+          } else {
+            final mediaExtra = snapshot.data!; // Extrahiere MediaExtra-Daten
+            // Abgerundete Ecken der Karte beibehalten
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                // Bild von der Vorderseite als Hintergrund
+                Image.network(
+                  'https://image.tmdb.org/t/p/w500${widget.mediaItem.posterPath}',
+                  fit: BoxFit.cover,
+                ),
+                // Schwarze transparente Schicht
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black
+                        .withOpacity(0.9), // Schwarze transparente Farbe
+                  ),
+                ),
+                // Textinhalt zentriert auf der Karte
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(20.0),
+                    child: Transform(
+                      transform: Matrix4.rotationY(math.pi),
+                      // Drehung um die Y-Achse um 180 Grad (pi Radiant)
+                      alignment: Alignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // Texte linksbündig ausrichten
+                            children: [
+                              Text(
+                                widget.mediaItem.title,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 8), // Platz zwischen den Texten
+                              Align(
+                                alignment: Alignment.centerRight,
+                                // Text rechtsbündig ausrichten
+                                child: Text(
+                                  DateFormat('dd.MM.yyyy').format(
+                                      DateTime.parse(mediaExtra.releaseDate)),
+                                  // Datum im Format "dd.MM.yyyy"
+                                  textAlign:
+                                      TextAlign.right, // Rechts ausrichten
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: 8), // Platz zwischen den Texten
-                        Align(
-                          alignment: Alignment.centerRight, // Text rechtsbündig ausrichten
-                          child: Text(
-                            DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.mediaItem.releaseDate)), // Datum im Format "dd.MM.yyyy"
-                            textAlign: TextAlign.right, // Rechts ausrichten
+                          SizedBox(height: 10),
+                          // Abstand zwischen Titel und Beschreibung
+                          Text(
+                            widget.mediaItem.overview,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18.0,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
-                    Text(
-                      widget.mediaItem.overview,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-
+                          SizedBox(height: 10),
+                          Text(
+                            'Bewertung',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10),
+                          // Abstand zwischen Titel und Beschreibung
+                          DonutChart(voteAverage: widget.mediaItem.voteAverage),
+                          SizedBox(height: 10),
+                          Text(
+                            mediaExtra.runtime.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            mediaExtra.watchProviderLink,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
-
-                    Text(
-                      'Bewertung',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold
-
-                      ),
-                    ),
-                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
-                    DonutChart(voteAverage: widget.mediaItem.voteAverage),
-                    SizedBox(height: 10), // Abstand zwischen Titel und Beschreibung
-                    Text(
-                      widget.mediaItem.overview,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ],
+              ],
+            );
+          }
+        },
       ),
     );
   }
 }
-
-
 
 class CardData {
   String? posterPath; // Jetzt optional

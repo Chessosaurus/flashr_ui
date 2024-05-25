@@ -205,7 +205,7 @@ class MovieService {
     }
   }
 
-  static Future<List<MovieExtra>> getExtraMovieInfo(int movieId) async {
+  static Future<MovieExtra> getExtraMovieInfo(int movieId) async {
     final response = await Supabase.instance.client.functions.invoke(
         'getExtraInfoMovie',
         body: {'movie_id': movieId}
@@ -228,20 +228,20 @@ class MovieService {
           List<Map<String, dynamic>>.from(watchProvider['flatrate']);
         }
 
-        // Create MovieExtra object with the extracted data
-        movieExtras.add(MovieExtra(
+
+        final movieExtra = MovieExtra(
           runtime: data['runtime'] as int? ?? 0,
           releaseDate: data['release_date'] as String? ?? '',
           watchProviderLink: watchProviderLink,
           flatrate: flatrateList,
-        ));
+        );
+        return movieExtra;
       } catch (e) {
         // Handle parsing errors (log or throw a more specific exception)
         print('Error parsing movie details: $e');
         print('Movie Item: $data');
+        rethrow;
       }
-
-      return movieExtras;
     } else {
       throw Exception('Unexpected response format from Supabase function');
     }

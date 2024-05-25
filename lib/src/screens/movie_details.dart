@@ -32,19 +32,8 @@ class _MovieDetailsState extends State<MovieDetails> with SingleTickerProviderSt
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
-    mediaExtra = _fetchMediaExtra();
   }
 
-  Future<List<MediaExtra>> _fetchMediaExtra() async {
-    final mediaItem = widget.media;
-    if (mediaItem is Movie) {
-      return MovieService.getExtraMovieInfo(mediaItem.id);
-    } else if (mediaItem is Tv) {
-      return TvService.getExtraTvInfo(mediaItem.id); // Neue Methode in TvService
-    } else {
-      throw ArgumentError('Unsupported media type: ${mediaItem.runtimeType}');
-    }
-  }
 
 
   @override

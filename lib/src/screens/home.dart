@@ -108,8 +108,8 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           return CategorySection(
                               title: filterModel.selectedFilter == FilterType.movies
-                              ? 'Beliebte Filme'
-                                  : 'Beliebte Serien',
+                              ? 'Watchlist'
+                                  : 'Watchlist',
                               // Typecast, je nachdem, ob Filme oder Serien geladen werden
                               media: filterModel.selectedFilter == FilterType.movies
                               ? snapshot.data!.cast<Movie>()
@@ -149,8 +149,8 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           return CategorySection(
                             title: filterModel.selectedFilter == FilterType.movies
-                                ? 'Beliebte Filme'
-                                : 'Beliebte Serien',
+                                ? 'Für dich Empfohlen'
+                                : 'Für dich Empfohlen',
                             // Typecast, je nachdem, ob Filme oder Serien geladen werden
                             media: filterModel.selectedFilter == FilterType.movies
                                 ? snapshot.data!.cast<Movie>()

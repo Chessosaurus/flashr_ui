@@ -122,7 +122,7 @@ class TvService {
       String? uuid = SupabaseAuthService().user?.userUuid;
       if(uuid != null){
         int userId = await SupabaseAuthService().getUserId(uuid);
-        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_interested", params: { "user_id": userId, "tv:id": tvId});
+        final response = await Supabase.instance.client.schema("persistence").rpc("tv_status_interested", params: { "tv:id": tvId, "user_id": userId});
         if (response['status'] != 200) {
           throw Exception('Failed to set movie status');
         }
@@ -197,7 +197,7 @@ class TvService {
       }
     }
 
-    static Future<List<TvExtra>> getExtraTvInfo(int tvId) async {
+    static Future<TvExtra> getExtraTvInfo(int tvId) async {
       final response = await Supabase.instance.client.functions.invoke(
           'getExtraInfoTv',
           body: {'tv_id': tvId}
@@ -220,20 +220,19 @@ class TvService {
             List<Map<String, dynamic>>.from(watchProvider['flatrate']);
           }
 
-          // Create MovieExtra object with the extracted data
-          movieExtras.add(TvExtra(
+          final tvExtra = TvExtra(
             runtime: data['runtime'] as int? ?? 0,
             releaseDate: data['release_date'] as String? ?? '',
             watchProviderLink: watchProviderLink,
             flatrate: flatrateList,
-          ));
+          );
+          return tvExtra;
         } catch (e) {
           // Handle parsing errors (log or throw a more specific exception)
           print('Error parsing movie details: $e');
           print('Movie Item: $data');
+          rethrow;
         }
-
-        return movieExtras;
       } else {
         throw Exception('Unexpected response format from Supabase function');
       }
