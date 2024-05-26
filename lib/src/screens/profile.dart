@@ -87,12 +87,14 @@ class _ProfileViewState extends State<ProfileView> {
   final User? user = Supabase.instance.client.auth.currentUser;
   late Future<List<Movie>> watchlist;
   late Future<List<Movie>> recentlyWatchedList;
+  late Future<List<Movie>> favoriteList;
 
   @override
   void initState() {
     super.initState();
     watchlist = MovieService.fetchMovieWatchlist();
     recentlyWatchedList = MovieService.fetchRecentlyWatchedMovies();
+    favoriteList = MovieService.fetchMovieFavorite();
   }
 
   @override
@@ -112,13 +114,20 @@ class _ProfileViewState extends State<ProfileView> {
             user?.userMetadata?["username"] != null ? user!.userMetadata!['username'].toString(): "not defined",
           ),
           SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MoviePoster(title: 'Lieblingsfilm 1'), // Lieblingsfilme hier einfügen
-              MoviePoster(title: 'Lieblingsfilm 2'),
-              MoviePoster(title: 'Lieblingsfilm 3'),
-            ],
+          FutureBuilder<List<Movie>>(
+            future: favoriteList,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return CategorySection(
+                  title: 'Favoriten',
+                  media: snapshot.data!,
+                );
+              }
+            },
           ),
           SizedBox(height: 40),
           FutureBuilder<List<Movie>>(

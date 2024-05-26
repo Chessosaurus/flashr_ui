@@ -71,6 +71,25 @@ class MovieService {
     }
   }
 
+  static Future<List<Movie>> fetchMovieFavorite() async {
+    String? uuid = SupabaseAuthService().user?.userUuid;
+    if (uuid != null) {
+      int user_id = await SupabaseAuthService().getUserId(uuid);
+      final response = await Supabase.instance.client.schema("persistence").rpc(
+          "get_favorite_movies_of_user",
+          params: { "user_id": user_id,});
+      if (response != null) {
+        var data = response;
+        List result = data;
+        return result.map((e) => Movie.fromJson(e)).toList();
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception('Failed to get uuid');
+    }
+  }
+
   static Future<List<Movie>> fetchRecentlyWatchedMovies() async {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
@@ -167,9 +186,7 @@ class MovieService {
     String? uuid = SupabaseAuthService().user?.userUuid;
     if (uuid != null) {
       int userId = await SupabaseAuthService().getUserId(uuid);
-      final response = await Supabase.instance.client.schema("persistence").rpc(
-          "movie_status_favorite",
-          params: { "user_id": userId, "movie_id": movieId});
+      final response = await Supabase.instance.client.schema("persistence").rpc("movie_status_favorite", params: { "user_id": userId, "movie_id": movieId});
       if (response['status'] != 200) {
         throw Exception('Failed to set movie status');
       }

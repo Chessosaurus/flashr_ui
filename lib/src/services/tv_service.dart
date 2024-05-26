@@ -71,6 +71,25 @@ class TvService {
       }
     }
 
+    static Future<List<Tv>> fetchTvFavorite() async {
+      String? uuid = SupabaseAuthService().user?.userUuid;
+      if (uuid != null) {
+        int user_id = await SupabaseAuthService().getUserId(uuid);
+        final response = await Supabase.instance.client.schema("persistence").rpc(
+            "get_favorite_tv_of_user",
+            params: { "user_id": user_id,});
+        if (response != null) {
+          var data = response;
+          List result = data;
+          return result.map((e) => Tv.fromJson(e)).toList();
+        } else {
+          return [];
+        }
+      } else {
+        throw Exception('Failed to get uuid');
+      }
+    }
+
     static Future<List<Tv>> fetchRecentlyWatchedTvs() async {
       String? uuid = SupabaseAuthService().user?.userUuid;
       if (uuid != null) {

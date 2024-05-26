@@ -27,7 +27,7 @@ class _MovieSwipeState extends State<MovieSwipe>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   List<CardData> cards = [];
-  static const int thresholdToFetchMore = 3;
+  static const int thresholdToFetchMore = 1;
 
   @override
   void initState() {
@@ -36,6 +36,7 @@ class _MovieSwipeState extends State<MovieSwipe>
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
+
   }
 
   @override
@@ -45,26 +46,29 @@ class _MovieSwipeState extends State<MovieSwipe>
   }
 
   Future<void> fetchMediaCards() async {
-    if (!mounted) return;
+    if (!mounted) return; // Sicherstellen, dass das Widget noch existiert
     try {
-      final filterModel = Provider.of<FilterModel>(context);
+      final filterModel = Provider.of<FilterModel>(context, listen: false);
 
       if (filterModel.selectedFilter == FilterType.movies) {
         final movies = await MovieService.fetchSwipeMovieRecommendation(10);
-        setState(() {
-          cards.addAll(CardData.fromMedia(movies.cast<Media>()));
-        });
+        if (mounted) {
+          setState(() {
+            cards.addAll(CardData.fromMedia(movies.cast<Media>()));
+          });
+        }
       } else {
         final tvShows = await TvService.fetchSwipeTvRecommendation(10);
-        setState(() {
-          cards.addAll(CardData.fromMedia(tvShows.cast<Media>()));
-        });
+        if (mounted) {
+          setState(() {
+            cards.addAll(CardData.fromMedia(tvShows.cast<Media>()));
+          });
+        }
       }
     } catch (e) {
       print('Failed to fetch media recommendations: $e');
     }
   }
-
   Future<void> _setMovieStatusUninterested(Media mediaItem) async {
     try {
       if (mediaItem is Movie) {
@@ -153,14 +157,14 @@ class _MovieSwipeState extends State<MovieSwipe>
               children: cards.asMap().entries.map((entry) {
                 int index = entry.key;
                 CardData card = entry.value;
-                if (index == cards.length - thresholdToFetchMore) {
-                  fetchMediaCards(); // Neue Karten im Hintergrund laden
-                }
                 return DraggableCard(
                   cardData: card,
                   onSwipe: () {
                     setState(() {
                       cards.removeAt(index);
+                      if (cards.length <= thresholdToFetchMore) {
+                        fetchMediaCards(); // Neue Karten laden
+                      }
                     });
                   },
                   onTap: () {
@@ -357,22 +361,23 @@ class _DraggableCardState extends State<DraggableCard> {
               }
             });
           },
-          onPanEnd: (details) {
+          onPanEnd: (details) async {
             double deltaX1 = _position.dx - _startPosition.dx;
             double deltaX2 = _startPosition.dx - _position.dx;
             double deltaY = _startPosition.dy - _position.dy;
             if (widget.cardData.isFrontVisible && deltaX1 > 100) {
               //Überprüfung auf Rechts-Swipe
+              await _setMovieStatusWatched(widget.cardData.mediaItem.id);
               widget.onSwipe();
-              _setMovieStatusWatched(widget.cardData.mediaItem.id);
               print("rechts");
             } else if (widget.cardData.isFrontVisible && deltaX2 > 350) {
               //Überprüfung auf Links-Swipe
+              await _setMovieStatusUninterested(widget.cardData.mediaItem.id);
               widget.onSwipe();
-              _setMovieStatusUninterested(widget.cardData.mediaItem.id);
               print("links");
             } else if (widget.cardData.isFrontVisible && deltaY > 700) {
               //Überprüfung auf Oben-Swipe
+              await _setMovieStatusInterested(widget.cardData.mediaItem.id);
               widget.onSwipe();
               _setMovieStatusInterested(widget.cardData.mediaItem.id);
               print("oben");
