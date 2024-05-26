@@ -26,9 +26,8 @@ class MovieSwipe extends StatefulWidget {
 class _MovieSwipeState extends State<MovieSwipe>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  List<String> movieImages = [];
-  List<Movie> movies = [];
   List<CardData> cards = [];
+  static const int thresholdToFetchMore = 3;
 
   @override
   void initState() {
@@ -46,18 +45,19 @@ class _MovieSwipeState extends State<MovieSwipe>
   }
 
   Future<void> fetchMediaCards() async {
+    if (!mounted) return;
     try {
       final filterModel = Provider.of<FilterModel>(context);
 
       if (filterModel.selectedFilter == FilterType.movies) {
         final movies = await MovieService.fetchSwipeMovieRecommendation(10);
         setState(() {
-          cards = CardData.fromMedia(movies.cast<Media>());
+          cards.addAll(CardData.fromMedia(movies.cast<Media>()));
         });
       } else {
         final tvShows = await TvService.fetchSwipeTvRecommendation(10);
         setState(() {
-          cards = CardData.fromMedia(tvShows.cast<Media>());
+          cards.addAll(CardData.fromMedia(tvShows.cast<Media>()));
         });
       }
     } catch (e) {
@@ -153,16 +153,14 @@ class _MovieSwipeState extends State<MovieSwipe>
               children: cards.asMap().entries.map((entry) {
                 int index = entry.key;
                 CardData card = entry.value;
+                if (index == cards.length - thresholdToFetchMore) {
+                  fetchMediaCards(); // Neue Karten im Hintergrund laden
+                }
                 return DraggableCard(
                   cardData: card,
                   onSwipe: () {
                     setState(() {
-                      cards.removeAt(
-                          index); // Karte an bestimmtem Index entfernen
-                      if (cards.length < 3) {
-                        // Wenn weniger als 5 Karten übrig sind
-                        fetchMediaCards(); // Neue Karten laden
-                      }
+                      cards.removeAt(index);
                     });
                   },
                   onTap: () {

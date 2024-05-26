@@ -49,5 +49,14 @@
     <string>QR code scanner needs camera access to scan QR codes</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>QR code scanner needs photos access to get QR code from photo library</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>flashr</string>
+        </array>
+      </dict>
+    </array>
 </dict>
 </plist>

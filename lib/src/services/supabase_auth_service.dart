@@ -1,4 +1,5 @@
 import 'package:flasher_ui/src/models/user_flashr.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseAuthService {
@@ -30,7 +31,7 @@ class SupabaseAuthService {
       email: email,
       password: password,
       data: {
-        username: username,
+        "username": username,
       },
     );
     return _userFromSupabase(response.user);
@@ -68,22 +69,15 @@ class SupabaseAuthService {
     }
   }
 
-  Future<void> anounymousSignIn() async {
+  Future<void> signInWithDiscord () async {
     try {
-      await _auth.signInWithPassword(
-          email: 'omar@gmail.com', password: '123456');
+      await _auth.signInWithOAuth(OAuthProvider.discord, redirectTo: '/homepage');
     } catch (e) {
       throw e.toString();
     }
   }
 
-/*  Future<void> signInWithGoogle() async {
-    try {
-      await _auth.signInWithOAuth(Provider.google);
-    } catch (e) {
-      throw e.toString();
-    }
-  }*/
+
 
   Future<void> signOut() async {
     try {

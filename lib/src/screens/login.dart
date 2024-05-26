@@ -1,9 +1,10 @@
 import 'package:flasher_ui/src/screens/reset_password.dart';
 import 'package:flasher_ui/src/screens/signup.dart';
 import 'package:flasher_ui/src/widgets/snackbarwidget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.supabase});
@@ -57,31 +58,17 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<AuthResponse> _googleSignIn() async {
-    const webClientId = '350231170936-9etbngphcacguff0vughr37st6m4gtfa.apps.googleusercontent.com';
-    const iosClientId = 'my-ios.apps.googleusercontent.com';
+  Future<void> _signInWithDiscord() async {
+    try {
+      final response = await Supabase.instance.client.auth.signInWithOAuth(OAuthProvider.discord, redirectTo: kIsWeb ? null : 'io.supabase.flashr_ui://login-callback',);
 
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: iosClientId,
-      serverClientId: webClientId,
-    );
-    final googleUser = await googleSignIn.signIn();
-    final googleAuth = await googleUser!.authentication;
-    final accessToken = googleAuth.accessToken;
-    final idToken = googleAuth.idToken;
-
-    if (accessToken == null) {
-      throw 'No Access Token found.';
+      if(response == true) {
+        Navigator.pushReplacementNamed(context, '/homepage');
+      }
+        } catch (e) {
+      // Fehlerbehandlung
+      print('Fehler bei der Anmeldung: $e');
     }
-    if (idToken == null) {
-      throw 'No ID Token found.';
-    }
-
-    return Supabase.instance.client.auth.signInWithIdToken(
-      provider: OAuthProvider.google,
-      idToken: idToken,
-      accessToken: accessToken,
-    );
   }
 
   @override
@@ -145,8 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _googleSignIn,
-                    child: const Text('Google login'),
+                    onPressed: _signInWithDiscord,
+                    child: const Text('Discord'),
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
