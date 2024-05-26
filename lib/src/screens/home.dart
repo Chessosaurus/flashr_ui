@@ -139,6 +139,8 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                     ),
+                    SizedBox(height: 20),
+
                     FutureBuilder<List<dynamic>>(
                       future: contentRecommendations,
                       builder: (context, snapshot) {

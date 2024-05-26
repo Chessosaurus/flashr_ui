@@ -495,7 +495,6 @@ class _CardBackState extends State<CardBack> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15.0),
       child: FutureBuilder<MediaExtra>(
-        // FutureBuilder für mediaExtra
         future: mediaExtra,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -506,7 +505,6 @@ class _CardBackState extends State<CardBack> {
                 child: Text('Fehler: ${snapshot.error}')); // Fehleranzeige
           } else {
             final mediaExtra = snapshot.data!; // Extrahiere MediaExtra-Daten
-            // Abgerundete Ecken der Karte beibehalten
             return Stack(
               fit: StackFit.expand,
               children: [
@@ -518,8 +516,7 @@ class _CardBackState extends State<CardBack> {
                 // Schwarze transparente Schicht
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.black
-                        .withOpacity(0.9), // Schwarze transparente Farbe
+                    color: Colors.black.withOpacity(0.9),
                   ),
                 ),
                 // Textinhalt zentriert auf der Karte
@@ -529,14 +526,12 @@ class _CardBackState extends State<CardBack> {
                     padding: EdgeInsets.all(20.0),
                     child: Transform(
                       transform: Matrix4.rotationY(math.pi),
-                      // Drehung um die Y-Achse um 180 Grad (pi Radiant)
                       alignment: Alignment.center,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            // Texte linksbündig ausrichten
                             children: [
                               Text(
                                 widget.mediaItem.title,
@@ -547,20 +542,33 @@ class _CardBackState extends State<CardBack> {
                                 ),
                               ),
                               SizedBox(height: 8), // Platz zwischen den Texten
-                              Align(
-                                alignment: Alignment.centerRight,
-                                // Text rechtsbündig ausrichten
-                                child: Text(
-                                  DateFormat('dd.MM.yyyy').format(
-                                      DateTime.parse(mediaExtra.releaseDate)),
-                                  // Datum im Format "dd.MM.yyyy"
-                                  textAlign:
-                                      TextAlign.right, // Rechts ausrichten
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${mediaExtra.runtime} min',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        DateFormat('dd.MM.yyyy').format(
+                                            DateTime.parse(
+                                                mediaExtra.releaseDate)),
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -585,14 +593,6 @@ class _CardBackState extends State<CardBack> {
                           SizedBox(height: 10),
                           // Abstand zwischen Titel und Beschreibung
                           DonutChart(voteAverage: widget.mediaItem.voteAverage),
-                          SizedBox(height: 10),
-                          Text(
-                            mediaExtra.runtime.toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                            ),
-                          ),
                           SizedBox(height: 10),
                           Text(
                             mediaExtra.watchProviderLink,

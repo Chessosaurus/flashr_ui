@@ -41,7 +41,6 @@ class CategorySection extends StatelessWidget {
                       );
                   },
                   child: Container(
-                    width: 120,
                     color: Colors.grey, // Placeholder
                     child: Column(
                       children: [
@@ -49,7 +48,6 @@ class CategorySection extends StatelessWidget {
                         if (mediaItem.posterPath != null)
                           Image.network(
                             'https://image.tmdb.org/t/p/w500${mediaItem.posterPath}',
-                            width: 120,
                             height: 172,
                           ),
                       ],
