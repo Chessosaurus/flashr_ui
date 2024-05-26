@@ -174,27 +174,28 @@ class _MovieDetailsState extends State<MovieDetails>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Favorit erfolgreich gesetzt!')),
           );
+        }else {
+          showDialog(
+            context: context,
+            builder: (context) =>
+                AlertDialog(
+                  title: Text('Fehler'),
+                  content: Text(
+                      'Favorit konnte nicht gesetzt werden, da schon alle Favoriten gesetzt worden.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('OK'),
+                    ),
+                  ],
+                ),
+          );
         }
 
       }
     } on Exception catch (error) {
       print('Fehler beim Setzen des Status auf "Favorit');
     }
-    showDialog(
-      context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text('Fehler'),
-            content: Text(
-                'Favorit konnte nicht gesetzt werden, da schon alle Favoriten gesetzt worden.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
-              ),
-            ],
-          ),
-    );
   }
 
   @override
