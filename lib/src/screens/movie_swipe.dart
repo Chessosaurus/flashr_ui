@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flasher_ui/src/models/movie_extra.dart';
 import 'package:flasher_ui/src/widgets/donut_chart.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
@@ -505,109 +506,143 @@ class _CardBackState extends State<CardBack> {
                 child: Text('Fehler: ${snapshot.error}')); // Fehleranzeige
           } else {
             final mediaExtra = snapshot.data!; // Extrahiere MediaExtra-Daten
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                // Bild von der Vorderseite als Hintergrund
-                Image.network(
-                  'https://image.tmdb.org/t/p/w500${widget.mediaItem.posterPath}',
-                  fit: BoxFit.cover,
-                ),
-                // Schwarze transparente Schicht
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.9),
-                  ),
-                ),
-                // Textinhalt zentriert auf der Karte
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.all(20.0),
-                    child: Transform(
-                      transform: Matrix4.rotationY(math.pi),
-                      alignment: Alignment.center,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.mediaItem.title,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8), // Platz zwischen den Texten
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      '${mediaExtra.runtime} min',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        DateFormat('dd.MM.yyyy').format(
-                                            DateTime.parse(
-                                                mediaExtra.releaseDate)),
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          // Abstand zwischen Titel und Beschreibung
-                          Text(
-                            widget.mediaItem.overview,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'Bewertung',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 10),
-                          // Abstand zwischen Titel und Beschreibung
-                          DonutChart(voteAverage: widget.mediaItem.voteAverage),
-                          SizedBox(height: 10),
-                          Text(
-                            mediaExtra.watchProviderLink,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                        ],
+
+            return LayoutBuilder(
+              builder: (contex, constraints) {
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Bild von der Vorderseite als Hintergrund
+                    Image.network(
+                      'https://image.tmdb.org/t/p/w500${widget.mediaItem.posterPath}',
+                      fit: BoxFit.cover,
+                    ),
+                    // Schwarze transparente Schicht
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.9),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                    // Textinhalt zentriert auf der Karte
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: SizedBox(
+                        height: constraints.maxHeight - 40,
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.all(20.0),
+                          child: Transform(
+                            transform: Matrix4.rotationY(math.pi),
+                            alignment: Alignment.center,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.mediaItem.title,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height: 8), // Platz zwischen den Texten
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            '${mediaExtra.runtime} min',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18.0,
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Text(
+                                              DateFormat('dd.MM.yyyy').format(
+                                                  DateTime.parse(
+                                                      mediaExtra.releaseDate)),
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                // Abstand zwischen Titel und Beschreibung
+                                Text(
+                                  widget.mediaItem.overview,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Bewertung',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 10),
+                                // Abstand zwischen Titel und Beschreibung
+                                DonutChart(
+                                    voteAverage: widget.mediaItem.voteAverage),
+                                SizedBox(height: 10),
+                                Text(
+                                  mediaExtra.watchProviderLink,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                if (mediaExtra.flatrate != null)
+                                  Row(
+                                    children: mediaExtra.flatrate!
+                                        .map((providerData) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          // Spalte für Logo und Namen
+                                          children: [
+                                            Image.network(
+                                              'https://image.tmdb.org/t/p/w500${providerData['logo_path']}',
+                                              fit: BoxFit.cover,
+                                              height:
+                                                  50, // Begrenze die Höhe des Logos
+                                            ),
+                                            SizedBox(
+                                                height:
+                                                    4), // Abstand zwischen Logo und Name
+                                            Text(providerData[
+                                                'provider_name']), // Anbietername
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           }
         },
