@@ -67,6 +67,10 @@ class _MovieDetailsState extends State<MovieDetails> with SingleTickerProviderSt
                 icon: Icon(Icons.remove_red_eye),
                 onPressed: _watched,
               ),
+              IconButton(
+                icon: Icon(Icons.favorite),
+                onPressed: _watched,
+              ),
             ],
           ),
           body: GestureDetector(
