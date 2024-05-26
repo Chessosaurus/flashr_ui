@@ -72,16 +72,20 @@ class _QRScreensState extends State<QRScreens> {
             BottomNavigationBarItem(
               icon: Icon(Icons.qr_code_scanner),
               label: 'Scannen',
-              backgroundColor: _currentIndex == 0 ? Colors.redAccent : Colors
-                  .grey,
+              backgroundColor: _currentIndex == 0
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.grey,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.qr_code),
               label: 'QR Code',
-              backgroundColor: _currentIndex == 1 ? Colors.redAccent : Colors
-                  .grey,
+              backgroundColor: _currentIndex == 1
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.grey,
             ),
           ],
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Colors.grey,
         ),
       );
     }
