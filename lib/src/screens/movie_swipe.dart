@@ -601,16 +601,26 @@ class _CardBackState extends State<CardBack> {
                                 // Abstand zwischen Titel und Beschreibung
                                 DonutChart(
                                     voteAverage: widget.mediaItem.voteAverage),
-                                SizedBox(height: 10),
+                                SizedBox(height: 20),
                                 Text(
+                                  'Streaminganbieter',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                /*Text(
                                   mediaExtra.watchProviderLink,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18.0,
                                   ),
-                                ),
+                                ),*/
                                 if (mediaExtra.flatrate != null)
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center, // Zentriere die Row horizontal
+
                                     children: mediaExtra.flatrate!
                                         .map((providerData) {
                                       return Padding(
