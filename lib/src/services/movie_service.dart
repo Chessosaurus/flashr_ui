@@ -222,6 +222,19 @@ class MovieService {
     }
   }
 
+  static Future<List<Movie>> fetchFavoriteMoviesOfFriend(int userId) async {
+    final response = await Supabase.instance.client.schema("persistence").rpc(
+        "get_favorite_movies_of_user",
+        params: { "user_id": userId,});
+    if (response != null) {
+      var data = response;
+      List result = data;
+      return result.map((e) => Movie.fromJson(e)).toList();
+    } else {
+      return [];
+    }
+  }
+
   static Future<MovieExtra> getExtraMovieInfo(int movieId) async {
     final response = await Supabase.instance.client.functions.invoke(
         'getExtraInfoMovie',

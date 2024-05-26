@@ -59,12 +59,14 @@ class FriendView extends StatefulWidget {
 class _FriendViewState extends State<FriendView> {
   late Future<List<Movie>> watchlist;
   late Future<List<Movie>> recentlyWatchedList;
+  late Future<List<Movie>> favoriteList;
 
   @override
   void initState() {
     super.initState();
     watchlist = MovieService.fetchMovieWatchlistofFriend(widget.friend.friendId);
     recentlyWatchedList = MovieService.fetchRecentlyWatchedMoviesofFriend(widget.friend.friendId);
+    favoriteList = MovieService.fetchMovieFavorite();
   }
 
   @override
@@ -84,13 +86,20 @@ class _FriendViewState extends State<FriendView> {
             "Favoriten von " + widget.friend.friendName
           ),
           SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MoviePoster(title: 'Lieblingsfilm 1'), // Lieblingsfilme hier einfügen
-              MoviePoster(title: 'Lieblingsfilm 2'),
-              MoviePoster(title: 'Lieblingsfilm 3'),
-            ],
+          FutureBuilder<List<Movie>>(
+            future: favoriteList,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return CategorySection(
+                  title: 'Favoriten',
+                  media: snapshot.data!,
+                );
+              }
+            },
           ),
           SizedBox(height: 40),
           FutureBuilder<List<Movie>>(

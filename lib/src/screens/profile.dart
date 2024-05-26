@@ -87,8 +87,8 @@ class _ProfileViewState extends State<ProfileView> {
   final User? user = Supabase.instance.client.auth.currentUser;
   late Future<List<Movie>> watchlist;
   late Future<List<Movie>> recentlyWatchedList;
-  late Future<List<Movie>> favoriteList;
 
+  late Future<List<Movie>> favoriteList;
   @override
   void initState() {
     super.initState();
