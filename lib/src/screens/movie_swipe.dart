@@ -616,32 +616,39 @@ class _CardBackState extends State<CardBack> {
                                   ),
                                 ),*/
                                 if (mediaExtra.flatrate != null)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center, // Zentriere die Row horizontal
-
-                                    children: mediaExtra.flatrate!
-                                        .map((providerData) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          // Spalte für Logo und Namen
-                                          children: [
-                                            Image.network(
-                                              'https://image.tmdb.org/t/p/w500${providerData['logo_path']}',
-                                              fit: BoxFit.cover,
-                                              height:
-                                                  50, // Begrenze die Höhe des Logos
+                                  Center(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal, // Horizontal scrollen
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center, // Zentriere die Row horizontal
+                                        children: mediaExtra.flatrate!
+                                            .map((providerData) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              // Spalte für Logo und Namen
+                                              children: [
+                                                Image.network(
+                                                  'https://image.tmdb.org/t/p/w500${providerData['logo_path']}',
+                                                  fit: BoxFit.cover,
+                                                  height: 50, // Begrenze die Höhe des Logos
+                                                ),
+                                                SizedBox(height: 4), // Abstand zwischen Logo und Name
+                                                Text(providerData['provider_name']), // Anbietername
+                                              ],
                                             ),
-                                            SizedBox(
-                                                height:
-                                                    4), // Abstand zwischen Logo und Name
-                                            Text(providerData[
-                                                'provider_name']), // Anbietername
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  Center(
+                                    child: Text('Keine Streaminganbieter gefunden'),
                                   ),
+
+
+
                               ],
                             ),
                           ),
