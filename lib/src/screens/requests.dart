@@ -21,7 +21,13 @@ class _Requests extends State<Requests> {
   @override
   void initState() {
     super.initState();
-    friendRequestsList = FriendsService.getFriendshipRequests();
+    _refreshFriendRequests();
+  }
+
+  Future<void> _refreshFriendRequests() async {
+    setState(() {
+      friendRequestsList = FriendsService.getFriendshipRequests();
+    });
   }
 
 
@@ -86,7 +92,7 @@ class _Requests extends State<Requests> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: friends.length,
                           itemBuilder: (context, index) {
-                            return RequestListTile(users:friends);
+                            return RequestListTile(users:friends, onRequestUpdated: _refreshFriendRequests,);
                           },
                         ),
                       );
