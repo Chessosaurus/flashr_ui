@@ -1,20 +1,9 @@
-import 'package:flasher_ui/src/screens/profile.dart';
-import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 import 'package:flasher_ui/src/widgets/friend_navbar.dart';
-import 'package:flasher_ui/src/widgets/header.dart';
-import 'package:flasher_ui/src/widgets/header_friends.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
-
 import '../models/group.dart';
 import '../services/group_service.dart';
-import '../widgets/category_section.dart';
 import '../widgets/group_list_tile.dart';
 import '../widgets/navbar.dart';
-import '../widgets/friend_list_tile.dart';
-import 'home.dart';
-import 'movie_swipe.dart';
 
 class Groups extends StatefulWidget {
   const Groups({super.key});
@@ -38,18 +27,14 @@ class _Groups extends State<Groups> {
     setState(() {
       _selectedIndex = index;
     });
-    // Hier füge deine Navigationslogik hinzu, basierend auf dem ausgewählten Index
     switch (index) {
       case 0:
-      // Navigation zur Startseite
         Navigator.of(context).pushReplacementNamed('/homepage');
         break;
       case 1:
-      // Navigation zu den Favoriten
         Navigator.of(context).pushReplacementNamed('/movieswipe');
         break;
       case 2:
-      // Navigation zum Profil
         Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
@@ -58,7 +43,7 @@ class _Groups extends State<Groups> {
   int _selectedIndexFriends = 1;
   void _onItemTappedFriends(int index){
     setState(() {
-      _selectedIndexFriends = index; // Aktualisiere den Index der ausgewählten Seite
+      _selectedIndexFriends = index;
     });
   }
 
@@ -74,10 +59,8 @@ class _Groups extends State<Groups> {
     Future<void> _createGroup() async {
       try {
         await GroupService.createGroup(_groupNameController.text);
-        _toggleOverlay(); // Overlay schließen nach erfolgreicher Erstellung
-        // Optional: Gruppenliste aktualisieren oder eine Bestätigung anzeigen
+        _toggleOverlay();
       } catch (e) {
-        // Fehlerbehandlung (z. B. eine Fehlermeldung anzeigen)
         print('Fehler beim Erstellen der Gruppe: $e');
       }
     }
@@ -106,11 +89,11 @@ class _Groups extends State<Groups> {
                             _toggleOverlay();
                           },
                           child: Row(
-                            mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.add), // Dein Icon
-                              SizedBox(width: 8), // Ein kleiner Abstand zwischen Icon und Text
-                              Text('Gruppe erstellen'), // Dein Text
+                              Icon(Icons.add),
+                              SizedBox(width: 8),
+                              Text('Gruppe erstellen'),
                             ],
                           ),
                         ),
@@ -125,26 +108,27 @@ class _Groups extends State<Groups> {
                               return Text('Error: ${snapshot.error}');
                             } else {
                               final groups = snapshot.data!;
-                              return SizedBox(  // Wrap ListView.builder in SizedBox
-                                height: MediaQuery.of(context).size.height * 0.5, // Example height
+                              return SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.5,
                                 child: ListView.builder(
-                                  shrinkWrap: true,  // Add shrinkWrap
-                                  physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemCount: groups.length,
                                   itemBuilder: (context, index) {
                                     return GroupListTile(name: groups[index].name, group: groups[index],);
                                   },
                                 ),
                               );
-                            }},
+                            }
+                          },
                         ),
                       ],
                     )
                 ),
               ),
-              if (_showOverlay) // Overlay nur anzeigen, wenn _showOverlay true ist
+              if (_showOverlay)
                 Container(
-                  color: Colors.black54, // Hintergrund abdunkeln
+                  color: Colors.black54,
                   child: Center(
                     child: Container(
                       padding: EdgeInsets.all(20),
@@ -155,7 +139,8 @@ class _Groups extends State<Groups> {
                           TextField(
                             controller: _groupNameController,
                             decoration: InputDecoration(
-                                labelText: 'Gruppenname'),
+                                labelText: 'Gruppenname'
+                            ),
                           ),
                           SizedBox(height: 20),
                           Row(
@@ -166,7 +151,7 @@ class _Groups extends State<Groups> {
                                 child: Text('Erstellen'),
                               ),
                               ElevatedButton(
-                                onPressed: _toggleOverlay, // Overlay schließen
+                                onPressed: _toggleOverlay,
                                 child: Text('Abbrechen'),
                               ),
                             ],

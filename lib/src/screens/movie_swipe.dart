@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flasher_ui/src/models/movie_extra.dart';
 import 'package:flasher_ui/src/widgets/donut_chart.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
@@ -46,7 +45,7 @@ class _MovieSwipeState extends State<MovieSwipe>
   }
 
   Future<void> fetchMediaCards() async {
-    if (!mounted) return; // Sicherstellen, dass das Widget noch existiert
+    if (!mounted) return;
     try {
       final filterModel = Provider.of<FilterModel>(context, listen: false);
 
@@ -114,18 +113,14 @@ class _MovieSwipeState extends State<MovieSwipe>
     setState(() {
       _selectedIndex = index;
     });
-    // Hier füge deine Navigationslogik hinzu, basierend auf dem ausgewählten Index
     switch (index) {
       case 0:
-        // Navigation zur Startseite
         Navigator.of(context).pushReplacementNamed('/homepage');
         break;
       case 1:
-        // Navigation zu den Favoriten
         Navigator.of(context).pushReplacementNamed('/movieswipe');
         break;
       case 2:
-        // Navigation zum Profil
         Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
@@ -141,11 +136,6 @@ class _MovieSwipeState extends State<MovieSwipe>
   Widget build(BuildContext context) {
     final filterModel = Provider.of<FilterModel>(context);
     return Scaffold(
-      /*
-      appBar: AppBar(
-        title: Text('Karten Stapel'),
-      ),
-      */
       body: Column(
         children: [
           const Padding(
@@ -178,8 +168,7 @@ class _MovieSwipeState extends State<MovieSwipe>
                     });
                   },
                   controller: _controller,
-                  zIndex: (cards.length - index).toDouble(),
-                  // Stelle die Karten im Stapel dar
+                  zIndex: (cards.length - index).toDouble(), // Stelle die Karten im Stapel dar
                 );
               }).toList(),
             ),
@@ -213,7 +202,7 @@ class _MovieSwipeState extends State<MovieSwipe>
                           _setMovieStatusInterested(
                               cards.removeLast().mediaItem);
                         });
-                      }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
+                      },
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size.fromHeight(40),
                       ),
@@ -227,7 +216,7 @@ class _MovieSwipeState extends State<MovieSwipe>
                         setState(() {
                           _setMovieStatusWatched(cards.removeLast().mediaItem);
                         });
-                      }, // Zeige den Schriftzug nur, wenn der Button nicht aktiv ist
+                      },
                       style: ElevatedButton.styleFrom(
                         fixedSize: const Size.fromHeight(40),
                       ),
@@ -235,9 +224,9 @@ class _MovieSwipeState extends State<MovieSwipe>
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Platz für Profil-Icon
                 ],
-              ))
+              )
+          )
         ],
       ),
       bottomNavigationBar: NavBar(
@@ -253,14 +242,14 @@ class DraggableCard extends StatefulWidget {
   final Function onSwipe;
   final Function onTap;
   final AnimationController controller;
-  final double zIndex; // zIndex hinzufügen
+  final double zIndex;
 
   DraggableCard({
     required this.cardData,
     required this.onSwipe,
     required this.onTap,
     required this.controller,
-    required this.zIndex, // zIndex hinzufügen
+    required this.zIndex,
   });
 
   @override
@@ -441,7 +430,7 @@ class CardFront extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius:
-            BorderRadius.circular(15.0), // abgerundete Ecken der Karte
+            BorderRadius.circular(15.0),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -452,12 +441,11 @@ class CardFront extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        // um die abgerundeten Ecken zu behalten
         borderRadius: BorderRadius.circular(15.0),
         child: Image.network(
           'https://image.tmdb.org/t/p/w500${title}',
           fit: BoxFit
-              .cover, // das Bild so skalieren, dass es die komplette Fläche abdeckt
+              .cover,
         ),
       ),
     );
@@ -479,7 +467,6 @@ class _CardBackState extends State<CardBack> {
   @override
   void initState() {
     super.initState();
-    // Überprüfen, ob es sich um einen Film handelt
     if (widget.mediaItem is Movie) {
       mediaExtra = MovieService.getExtraMovieInfo(widget.mediaItem.id);
     } else if (widget.mediaItem is Tv) {
@@ -503,30 +490,27 @@ class _CardBackState extends State<CardBack> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child: CircularProgressIndicator()); // Ladeanzeige
+                child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
-                child: Text('Fehler: ${snapshot.error}')); // Fehleranzeige
+                child: Text('Fehler: ${snapshot.error}'));
           } else {
-            final mediaExtra = snapshot.data!; // Extrahiere MediaExtra-Daten
+            final mediaExtra = snapshot.data!;
 
             return LayoutBuilder(
               builder: (contex, constraints) {
                 return Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Bild von der Vorderseite als Hintergrund
                     Image.network(
                       'https://image.tmdb.org/t/p/w500${widget.mediaItem.posterPath}',
                       fit: BoxFit.cover,
                     ),
-                    // Schwarze transparente Schicht
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.9),
                       ),
                     ),
-                    // Textinhalt zentriert auf der Karte
                     Align(
                       alignment: Alignment.topCenter,
                       child: SizedBox(
@@ -551,7 +535,7 @@ class _CardBackState extends State<CardBack> {
                                       ),
                                     ),
                                     SizedBox(
-                                        height: 8), // Platz zwischen den Texten
+                                        height: 8),
                                     Row(
                                       children: [
                                         Expanded(
@@ -583,7 +567,6 @@ class _CardBackState extends State<CardBack> {
                                   ],
                                 ),
                                 SizedBox(height: 10),
-                                // Abstand zwischen Titel und Beschreibung
                                 Text(
                                   widget.mediaItem.overview,
                                   style: TextStyle(
@@ -601,7 +584,6 @@ class _CardBackState extends State<CardBack> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: 10),
-                                // Abstand zwischen Titel und Beschreibung
                                 DonutChart(
                                     voteAverage: widget.mediaItem.voteAverage),
                                 SizedBox(height: 20),
@@ -613,33 +595,25 @@ class _CardBackState extends State<CardBack> {
                                       fontSize: 22.0,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                /*Text(
-                                  mediaExtra.watchProviderLink,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                  ),
-                                ),*/
                                 if (mediaExtra.flatrate != null)
                                   Center(
                                     child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal, // Horizontal scrollen
+                                      scrollDirection: Axis.horizontal,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center, // Zentriere die Row horizontal
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: mediaExtra.flatrate!
                                             .map((providerData) {
                                           return Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Column(
-                                              // Spalte für Logo und Namen
                                               children: [
                                                 Image.network(
                                                   'https://image.tmdb.org/t/p/w500${providerData['logo_path']}',
                                                   fit: BoxFit.cover,
-                                                  height: 50, // Begrenze die Höhe des Logos
+                                                  height: 50,
                                                 ),
-                                                SizedBox(height: 4), // Abstand zwischen Logo und Name
-                                                Text(providerData['provider_name']), // Anbietername
+                                                SizedBox(height: 4),
+                                                Text(providerData['provider_name']),
                                               ],
                                             ),
                                           );
@@ -651,9 +625,6 @@ class _CardBackState extends State<CardBack> {
                                   Center(
                                     child: Text('Keine Streaminganbieter gefunden'),
                                   ),
-
-
-
                               ],
                             ),
                           ),
@@ -672,10 +643,9 @@ class _CardBackState extends State<CardBack> {
 }
 
 class CardData {
-  String? posterPath; // Jetzt optional
+  String? posterPath;
   bool isFrontVisible;
   Media mediaItem;
-  // Jetzt Media-Objekt
 
   CardData({required this.mediaItem, this.isFrontVisible = true});
 

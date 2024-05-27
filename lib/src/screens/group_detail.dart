@@ -1,7 +1,6 @@
 import 'package:flasher_ui/src/models/group.dart';
 import 'package:flasher_ui/src/models/user_flashr.dart';
 import 'package:flasher_ui/src/services/group_service.dart';
-import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -28,7 +27,6 @@ class _GroupDetailPage extends State<GroupDetailPage> {
   }
 
   bool _showOverlay = false;
-  final TextEditingController _groupNameController = TextEditingController();
 
   void _toggleOverlay() {
     setState(() {
@@ -39,10 +37,10 @@ class _GroupDetailPage extends State<GroupDetailPage> {
   Future<void> _addMemberToGroup(int userId) async {
     try {
       await GroupService.addUserToGroup(widget.group.id, userId);
-      setState(() { // Aktualisiere den Zustand, um die UI zu aktualisieren
+      setState(() {
         groupMemberList = GroupService.getUsersOfGroup(widget.group.id);
       });
-      _toggleOverlay(); // Overlay schließen nach erfolgreicher Erstellung
+      _toggleOverlay();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Benutzer erfolgreich zur Gruppe hinzugefügt!')),
       );
@@ -69,7 +67,7 @@ class _GroupDetailPage extends State<GroupDetailPage> {
   Future<void> _removeUserFromGroup(int? userId) async {
     try {
       await GroupService.removeUserFromGroup(widget.group.id, userId);
-      setState(() { // Aktualisiere den Zustand, um die UI zu aktualisieren
+      setState(() {
         Navigator.of(context).pushReplacementNamed('/groups');
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -108,7 +106,7 @@ class _GroupDetailPage extends State<GroupDetailPage> {
                 onPressed: () async {
                   try {
                     await GroupService.deleteGroup(widget.group.id);
-                    setState(() { // Aktualisiere den Zustand, um die UI zu aktualisieren
+                    setState(() {
                       Navigator.of(context).pushReplacementNamed('/groups');
                     });
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -178,24 +176,25 @@ class _GroupDetailPage extends State<GroupDetailPage> {
               _toggleOverlay();
             },
             child: Row(
-              mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.add), // Dein Icon
-                SizedBox(width: 8), // Ein kleiner Abstand zwischen Icon und Text
-                Text('Mitglied hinzufügen'), // Dein Text
+                Icon(Icons.add),
+                SizedBox(width: 8),
+                Text('Mitglied hinzufügen'),
               ],
             ),
           ),
+          SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
               _deleteGroup();
             },
             child: Row(
-              mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.delete_forever), // Dein Icon
-                SizedBox(width: 8), // Ein kleiner Abstand zwischen Icon und Text
-                Text('Gruppe löschen'), // Dein Text
+                Icon(Icons.delete_forever),
+                SizedBox(width: 8),
+                Text('Gruppe löschen'),
               ],
             ),
           ),
@@ -210,11 +209,11 @@ class _GroupDetailPage extends State<GroupDetailPage> {
                     return Text('Error: ${snapshot.error}');
                   } else {
                     final groupMembers = snapshot.data!;
-                    return SizedBox(  // Wrap ListView.builder in SizedBox
-                      height: MediaQuery.of(context).size.height * 0.5, // Example height
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
                       child: ListView.builder(
                         shrinkWrap: true,  // Add shrinkWrap
-                        physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: groupMembers.length,
                         itemBuilder: (context, index) {
                            return Container(
@@ -231,9 +230,10 @@ class _GroupDetailPage extends State<GroupDetailPage> {
                                     _removeUserFromGroup(groupMembers[index].userId);
                                   });
                                 },
-                                  child:Icon(Icons.delete),),
+                                  child:Icon(Icons.delete),
+                                ),
                               ),
-                          );
+                           );
                         },
                       ),
                     );
@@ -243,9 +243,9 @@ class _GroupDetailPage extends State<GroupDetailPage> {
           ),
         ),
       ),
-            if (_showOverlay) // Overlay nur anzeigen, wenn _showOverlay true ist
+            if (_showOverlay)
               Container(
-                color: Colors.black54, // Hintergrund abdunkeln
+                color: Colors.black54,
                 child: Center(
                   child: Container(
                     padding: EdgeInsets.all(20),
@@ -263,11 +263,11 @@ class _GroupDetailPage extends State<GroupDetailPage> {
                               return Text('Error: ${snapshot.error}');
                             } else {
                               final friends = snapshot.data!;
-                              return SizedBox(  // Wrap ListView.builder in SizedBox
-                                height: MediaQuery.of(context).size.height * 0.5, // Example height
+                              return SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.5,
                                 child: ListView.builder(
-                                  shrinkWrap: true,  // Add shrinkWrap
-                                  physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemCount: friends.length,
                                   itemBuilder: (context, index) {
                                     return Container(
@@ -282,7 +282,8 @@ class _GroupDetailPage extends State<GroupDetailPage> {
                                         trailing: ElevatedButton(onPressed: () {
                                           _addMemberToGroup(friends[index].friendId);
                                         },
-                                          child:Text("Hinzufügen"),),
+                                          child:Text("Hinzufügen"),
+                                        ),
                                       ),
                                     );
                                   },
@@ -295,7 +296,7 @@ class _GroupDetailPage extends State<GroupDetailPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
-                              onPressed: _toggleOverlay, // Overlay schließen
+                              onPressed: _toggleOverlay,
                               child: Text('Zurück'),
                             ),
                           ],
@@ -308,10 +309,6 @@ class _GroupDetailPage extends State<GroupDetailPage> {
           ]
       ),
     );
-  }
-
-  void _navigateToProfile(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profile');
   }
 }
 

@@ -11,7 +11,7 @@ class MovieDetails extends StatefulWidget {
   final Media media;
 
   const MovieDetails({Key? key, required this.media})
-      : super(key: key); // media statt movie
+      : super(key: key);
 
   @override
   State<MovieDetails> createState() => _MovieDetailsState();
@@ -43,10 +43,6 @@ class _MovieDetailsState extends State<MovieDetails>
         double cardWidth = math.min(availableWidth, (availableHeight * 2) / 3);
         double cardHeight = (cardWidth * 3) / 2;
 
-        // Bestimme die horizontale Mitte des Bildschirms
-        double screenWidth = MediaQuery.of(context).size.width;
-        double screenCenterX = screenWidth / 2;
-
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.media.title),
@@ -76,7 +72,7 @@ class _MovieDetailsState extends State<MovieDetails>
             onTap: () {
               setState(() {
                 isFrontVisible =
-                    !isFrontVisible; // Ändere den Status, wenn auf die Karte geklickt wird
+                    !isFrontVisible;
                 if (isFrontVisible) {
                   _controller.reverse();
                 } else {
@@ -115,7 +111,7 @@ class _MovieDetailsState extends State<MovieDetails>
                 ),
                 child: isFrontVisible
                     ? CardFront(title: widget.media.posterPath!)
-                    : CardBack(mediaItem: widget.media), // mediaExtra übergeben
+                    : CardBack(mediaItem: widget.media),
               ),
             ),
           ),
@@ -135,7 +131,7 @@ class _MovieDetailsState extends State<MovieDetails>
       } else if (mediaItem is Tv) {
         await TvService.setTVStatusWatched(mediaItem.id);
       }
-    } on Exception catch (error) {
+    } on Exception {
       print('Fehler beim Setzen des Status auf "Gesehen"');
     }
   }
@@ -181,7 +177,8 @@ class _MovieDetailsState extends State<MovieDetails>
                 AlertDialog(
                   title: Text('Fehler'),
                   content: Text(
-                      'Favorit konnte nicht gesetzt werden, da schon alle Favoriten gesetzt worden.'),
+                      'Favorit konnte nicht gesetzt werden, da schon alle Favoriten gesetzt worden.'
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -193,7 +190,7 @@ class _MovieDetailsState extends State<MovieDetails>
         }
 
       }
-    } on Exception catch (error) {
+    } on Exception {
       print('Fehler beim Setzen des Status auf "Favorit');
     }
   }

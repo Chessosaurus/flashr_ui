@@ -66,7 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(context, '/homepage');
       }
         } catch (e) {
-      // Fehlerbehandlung
       print('Fehler bei der Anmeldung: $e');
     }
   }

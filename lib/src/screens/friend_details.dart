@@ -1,10 +1,4 @@
-import 'package:flasher_ui/src/models/user_flashr.dart';
-import 'package:flasher_ui/src/services/supabase_auth_service.dart';
-import 'package:flasher_ui/src/widgets/snackbarwidget.dart';
 import 'package:flutter/material.dart';
-import 'package:flasher_ui/src/screens/home.dart';
-import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/friend.dart';
 import '../models/movie.dart';
 import '../services/movie_service.dart';
@@ -78,11 +72,11 @@ class _FriendViewState extends State<FriendView> {
         children: [
           CircleAvatar(
             radius: 80,
-            backgroundImage: AssetImage('assets/logo/flashr_logo.png'), // Profilbild hier einfügen
+            backgroundImage: AssetImage('assets/logo/flashr_logo.png'),
           ),
           SizedBox(height: 20),
           Text(
-            style: TextStyle(fontSize: 18), // Benutzername hier einfügen
+            style: TextStyle(fontSize: 18),
             "Favoriten von " + widget.friend.friendName
           ),
           SizedBox(height: 20),
@@ -139,6 +133,7 @@ class _FriendViewState extends State<FriendView> {
   }
 }
 
+//Platzhalter
 class MoviePoster extends StatelessWidget {
   final String title;
 
@@ -151,7 +146,7 @@ class MoviePoster extends StatelessWidget {
         Container(
           width: 120,
           height: 180,
-          color: Colors.grey, // Platzhalterfarbe für Filmplakat
+          color: Colors.grey,
         ),
       ],
     );

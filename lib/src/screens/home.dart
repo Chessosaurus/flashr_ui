@@ -1,10 +1,7 @@
-import 'package:flasher_ui/src/screens/profile.dart';
 import 'package:flasher_ui/src/widgets/header.dart';
 import 'package:flasher_ui/src/services/movie_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../models/filter.dart';
 import '../models/media.dart';
 import '../models/movie.dart';
@@ -12,8 +9,6 @@ import '../models/tv.dart';
 import '../services/tv_service.dart';
 import '../widgets/category_section.dart';
 import '../widgets/navbar.dart';
-import 'friends.dart';
-import 'movie_swipe.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,7 +21,6 @@ class _HomePageState extends State<HomePage> {
   late Future<List<Movie>> trendingMovies;
   late Future<List<Movie>> watchlist;
   late Future<List<Movie>> recommendationMovies;
- // Variablendeklaration für Filme oder Serien
 
   @override
   void initState() {
@@ -43,7 +37,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _selectedIndex = index;
     });
-    // Navigation logic based on the selected index
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed('/homepage');
@@ -75,8 +68,6 @@ class _HomePageState extends State<HomePage> {
       contentWatchlist = TvService.fetchTvWatchlist();
       contentRecommendations = TvService.fetchTvRecommendation();
     }
-    // Get the size of the screen
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -86,7 +77,6 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     Header(),
-                    // Search bar
                     TextField(
                       decoration: InputDecoration(
                         labelText: 'Suche nach Filmen, Serien, Genres etc.',
@@ -96,7 +86,6 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pushNamed(context, '/search');
                       },
                     ),
-                    // Movie list views
                     SizedBox(height: 20),
                     FutureBuilder<List<dynamic>>(
                       future: contentWatchlist,
@@ -110,7 +99,6 @@ class _HomePageState extends State<HomePage> {
                               title: filterModel.selectedFilter == FilterType.movies
                               ? 'Watchlist'
                                   : 'Watchlist',
-                              // Typecast, je nachdem, ob Filme oder Serien geladen werden
                               media: filterModel.selectedFilter == FilterType.movies
                               ? snapshot.data!.cast<Movie>()
                             : snapshot.data!.cast<Tv>(),
@@ -119,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                     SizedBox(height: 20),
-                    FutureBuilder<List<dynamic>>( // Dynamic, um Filme oder Serien zu akzeptieren
+                    FutureBuilder<List<dynamic>>(
                       future: contentTrending,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -131,7 +119,6 @@ class _HomePageState extends State<HomePage> {
                             title: filterModel.selectedFilter == FilterType.movies
                                 ? 'Beliebte Filme'
                                 : 'Beliebte Serien',
-                            // Typecast, je nachdem, ob Filme oder Serien geladen werden
                             media: filterModel.selectedFilter == FilterType.movies
                                 ? snapshot.data!.cast<Movie>()
                                 : snapshot.data!.cast<Tv>(),
@@ -153,7 +140,6 @@ class _HomePageState extends State<HomePage> {
                             title: filterModel.selectedFilter == FilterType.movies
                                 ? 'Für dich Empfohlen'
                                 : 'Für dich Empfohlen',
-                            // Typecast, je nachdem, ob Filme oder Serien geladen werden
                             media: filterModel.selectedFilter == FilterType.movies
                                 ? snapshot.data!.cast<Movie>()
                                 : snapshot.data!.cast<Tv>(),
