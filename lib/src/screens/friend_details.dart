@@ -66,7 +66,7 @@ class _FriendViewState extends State<FriendView> {
     super.initState();
     watchlist = MovieService.fetchMovieWatchlistofFriend(widget.friend.friendId);
     recentlyWatchedList = MovieService.fetchRecentlyWatchedMoviesofFriend(widget.friend.friendId);
-    favoriteList = MovieService.fetchMovieFavorite();
+    favoriteList = MovieService.fetchFavoriteMoviesOfFriend(widget.friend.friendId);
   }
 
   @override
