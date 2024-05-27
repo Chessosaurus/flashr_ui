@@ -12,7 +12,6 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the icon size based on the screen size
     final double iconSize = MediaQuery.of(context).size.width > 600 ? 40 : 40;
 
     return BottomNavigationBar(

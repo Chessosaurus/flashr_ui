@@ -1,11 +1,9 @@
 import 'package:flasher_ui/src/models/user_flashr.dart';
 
 import 'package:flasher_ui/src/services/search_service.dart';
-import 'package:flasher_ui/src/widgets/header_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/search_friend_section.dart';
-import '../widgets/search_section.dart';
 
 class SearchFriendPage extends StatefulWidget {
   const SearchFriendPage({super.key});
@@ -38,7 +36,7 @@ class _SearchFriendPageState extends State<SearchFriendPage> {
         ),
     ),
     body: SingleChildScrollView(
-      child: Column( // Hier wurde das Column-Widget hinzugefügt
+      child: Column(
         children: <Widget>[
           SingleChildScrollView(
             child: Padding(
@@ -63,7 +61,6 @@ class _SearchFriendPageState extends State<SearchFriendPage> {
                       }
                     },
                   ),
-                  // Film Listenansichten
                   SizedBox(height: 20),
                   FutureBuilder<List<UserFlashr>>(
                     future: searchResult,
@@ -75,7 +72,8 @@ class _SearchFriendPageState extends State<SearchFriendPage> {
                         return Text('Error: ${snapshot.error}');
                       } else {
                         return SearchFriendSection(title: 'Top Ergebnisse',
-                            users: snapshot.data!);
+                            users: snapshot.data!
+                        );
                       }
                     },
                   ),

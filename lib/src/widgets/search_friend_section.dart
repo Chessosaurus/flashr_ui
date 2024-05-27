@@ -1,7 +1,5 @@
-import 'package:flasher_ui/src/models/movie.dart';
 import 'package:flasher_ui/src/models/user_flashr.dart';
 import 'package:flasher_ui/src/services/friends_service.dart';
-import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class SearchFriendSection extends StatefulWidget {
@@ -17,7 +15,7 @@ class SearchFriendSection extends StatefulWidget {
 class _SearchFriendSectionState extends State<SearchFriendSection> {
   Future<void> _sendFriendRequest(int? userId) async {
     try {
-      await FriendsService.requestFriendship(userId); // Overlay schließen nach erfolgreicher Erstellung
+      await FriendsService.requestFriendship(userId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Benutzer wurde eine Freundschaftsanfrage gesendet!')),
       );
@@ -57,7 +55,7 @@ class _SearchFriendSectionState extends State<SearchFriendSection> {
           height: 420,
           child: widget.users.isEmpty ? Center(child: Text("Keine Suchergebnisse")) : ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: widget.users.length, // Hier die Anzahl der Elemente eintragen
+            itemCount: widget.users.length,
             itemBuilder: (context, index) {
               final user = widget.users[index];
                 return Container(

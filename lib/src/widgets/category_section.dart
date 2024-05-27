@@ -44,7 +44,6 @@ class CategorySection extends StatelessWidget {
                     color: Colors.grey, // Placeholder
                     child: Column(
                       children: [
-                        // Poster optional anzeigen, falls vorhanden
                         if (mediaItem.posterPath != null)
                           Image.network(
                             'https://image.tmdb.org/t/p/w500${mediaItem.posterPath}',

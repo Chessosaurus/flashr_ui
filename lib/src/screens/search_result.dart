@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../models/filter.dart';
 import '../models/media.dart';
-import '../models/movie.dart';
-import '../services/movie_service.dart';
 import '../widgets/search_section.dart';
 
 class SearchPage extends StatefulWidget {
@@ -81,7 +79,7 @@ class _SearchPageState extends State<SearchPage> {
                       } else {
                         setState(() {
                           searchResults = Future.value(
-                              []); // Bei leerer Suche, keine Ergebnisse
+                              []);
                         });
                       }
                     },

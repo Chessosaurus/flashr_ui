@@ -10,14 +10,13 @@ class DonutChart extends StatelessWidget {
     double roundedVoteAverage = double.parse(voteAverage.toStringAsFixed(1));
     double progressValue = roundedVoteAverage / 10.0;
 
-    // Bestimme die Farbe basierend auf dem gerundeten Wert
-    Color donutColor = Colors.red; // Standardfarbe
+    Color donutColor = Colors.red;
     if (roundedVoteAverage >= 8.5) {
-      donutColor = Colors.green[900]!; // Dunkelgrün
+      donutColor = Colors.green[900]!;
     } else if (roundedVoteAverage >= 7) {
-      donutColor = Colors.green; // Hellgrün
+      donutColor = Colors.green;
     } else if (roundedVoteAverage >= 5) {
-      donutColor = Colors.yellow; // Gelb
+      donutColor = Colors.yellow;
     }
 
     return Stack(
@@ -28,10 +27,10 @@ class DonutChart extends StatelessWidget {
           height: 75,
           child: CircularProgressIndicator(
             value: progressValue,
-            strokeWidth: 10, // Breite des Donuts
-            backgroundColor: Colors.transparent, // Hintergrundfarbe
+            strokeWidth: 10,
+            backgroundColor: Colors.transparent,
             valueColor: AlwaysStoppedAnimation<Color>(
-              donutColor, // Dynamische Farbe basierend auf gerundetem Wert
+              donutColor,
             ),
           ),
         ),

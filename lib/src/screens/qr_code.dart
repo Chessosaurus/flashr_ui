@@ -3,8 +3,6 @@ import 'package:flasher_ui/src/services/friends_service.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import '../services/supabase_auth_service.dart';
 
@@ -37,7 +35,6 @@ class _QRScreensState extends State<QRScreens> {
         });
       } catch (e) {
         debugPrint('Error fetching userId: $e');
-        // Handle the error (e.g., show a Snackbar)
       }
     }
   }
@@ -107,7 +104,6 @@ class QRCodeGeneratorPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (userId != null) ...[
-                // QR Code using qr_flutter
                 QrImageView(
                   data: userId!,
                   version: QrVersions.auto,
@@ -144,11 +140,11 @@ class _QRCodeDisplayPageState extends State<QRCodeDisplayPage> {
 
 
   Future<void> _sendFriendRequest(int? userId) async {
-    if (hasSentRequest) return; // Anfrage nicht erneut senden
-    setState(() => hasSentRequest = true); // Flag setzen
+    if (hasSentRequest) return;
+    setState(() => hasSentRequest = true);
 
     try {
-      await FriendsService.requestFriendship(userId); // Overlay schließen nach erfolgreicher Erstellung
+      await FriendsService.requestFriendship(userId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Benutzer wurde eine Freundschaftsanfrage gesendet!')),
       );
@@ -178,7 +174,7 @@ class _QRCodeDisplayPageState extends State<QRCodeDisplayPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('QR Scanner')),
       body: MobileScanner(
-        controller: cameraController, // Controller hinzufügen
+        controller: cameraController,
         onDetect: (capture) {
           final List<Barcode> barcodes = capture.barcodes;
           for (final barcode in barcodes) {
@@ -189,7 +185,6 @@ class _QRCodeDisplayPageState extends State<QRCodeDisplayPage> {
                 _sendFriendRequest(userId);
               } catch (e) {
                 print('Fehler beim Parsen der User ID: $e');
-                // Optional: Fehlermeldung für ungültigen QR-Code anzeigen
               }
             }
           }

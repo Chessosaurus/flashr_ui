@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../screens/profile.dart';
-
 class HeaderFriends extends StatelessWidget {
   const HeaderFriends({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity, // Setzen der Breite auf die Bildschirmbreite
+      width: double.infinity,
       child: Row(
         children: [
           Expanded(
@@ -32,10 +30,6 @@ class HeaderFriends extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _navigateToProfile(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profile');
   }
 
   void _navigateToQRCode(BuildContext context) {

@@ -1,11 +1,7 @@
-import 'package:flasher_ui/src/models/user_flashr.dart';
 import 'package:flasher_ui/src/services/supabase_auth_service.dart';
 import 'package:flasher_ui/src/widgets/snackbarwidget.dart';
 import 'package:flutter/material.dart';
-import 'package:flasher_ui/src/screens/home.dart';
-import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../widgets/category_section.dart';
 
 class Settings extends StatefulWidget {
   const Settings ({Key? key}) : super(key: key);
@@ -44,7 +40,6 @@ class _SettingsState extends State<Settings> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Implementiere die Zurück-Funktion hier
             _navigateBack(context);
           },
         ),
@@ -72,14 +67,12 @@ class _SettingsState extends State<Settings> {
                 title: Text('Sprache'),
                 trailing: Icon(Icons.language),
                 onTap: () {
-                  // Implementiere die Sprachauswahl
                 },
               ),
               ListTile(
                 title: Text('Benachrichtigungen'),
                 trailing: Icon(Icons.notifications),
                 onTap: () {
-                  // Implementiere die Benachrichtigungseinstellungen
                 },
               ),
               SizedBox(height: 20),
@@ -94,21 +87,18 @@ class _SettingsState extends State<Settings> {
                 title: Text('Profil bearbeiten'),
                 trailing: Icon(Icons.edit),
                 onTap: () {
-                  // Implementiere die Profilbearbeitung
                 },
               ),
               ListTile(
                 title: Text('Passwort ändern'),
                 trailing: Icon(Icons.lock),
                 onTap: () {
-                  // Implementiere die Funktion zum Ändern des Passworts
                 },
               ),
               ListTile(
                 title: Text('Konto löschen'),
                 trailing: Icon(Icons.delete),
                 onTap: () {
-                  // Implementiere die Funktion zum Löschen des Kontos
                 },
               ),
               SizedBox(height: 40),

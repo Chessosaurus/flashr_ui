@@ -1,4 +1,3 @@
-import 'package:flasher_ui/src/models/movie.dart';
 import 'package:flutter/material.dart';
 
 import '../models/media.dart';
@@ -28,14 +27,14 @@ class SearchSection extends StatelessWidget {
               ? Center(child: Text("Keine Suchergebnisse"))
               : ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: medias.length, // Hier die Anzahl der Elemente eintragen
+                itemCount: medias.length,
               itemBuilder: (context, index) {
               final movie = medias[index];
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0, top: 8.0),
                 child: Container(
                   width: 120,
-                  color: Colors.grey, // Hier würde das Bild des Films oder der Serie stehen
+                  color: Colors.grey,
                   child: Column(
                     children: [
                       // Zeige das Bild des Films an

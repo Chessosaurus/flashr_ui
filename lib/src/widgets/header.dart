@@ -1,5 +1,4 @@
 import 'package:flasher_ui/src/models/filter.dart';
-import 'package:flasher_ui/src/screens/movie_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +35,6 @@ class _HeaderState extends State<Header> {
             },
             style: ElevatedButton.styleFrom(
               fixedSize: Size.fromHeight(40),
-              // Manually set the background color based on the selected state
               backgroundColor: _selectedFilter == 0 ? Theme.of(context).colorScheme.primary : Colors.black,
               foregroundColor: _selectedFilter == 0 ? Colors.white : Theme.of(context).colorScheme.primary, // Textfarbe des Buttons
             ),
@@ -52,7 +50,6 @@ class _HeaderState extends State<Header> {
             },
             style: ElevatedButton.styleFrom(
               fixedSize: const Size.fromHeight(40),
-              // Manually set the background color based on the selected state
               backgroundColor: _selectedFilter == 1 ? Theme.of(context).colorScheme.primary : Colors.black,
               foregroundColor: _selectedFilter == 1 ? Colors.white : Theme.of(context).colorScheme.primary, // Textfarbe des Buttons
             ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/friend.dart';
-import '../models/user_flashr.dart';
 import '../services/friends_service.dart';
 
 class RequestListTile extends StatefulWidget {
@@ -17,7 +16,7 @@ class _RequestListTileState extends State<RequestListTile> {
 
   Future<void> _acceptFriendship(int? friendId) async {
     try {
-      await FriendsService.acceptFriendship(friendId); // Overlay schließen nach erfolgreicher Erstellung
+      await FriendsService.acceptFriendship(friendId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Die Anfrage wurde erfolgreich angenommen!')),
       );
@@ -43,7 +42,7 @@ class _RequestListTileState extends State<RequestListTile> {
 
   Future<void> _declineFriendship(int? friendId) async {
     try {
-      await FriendsService.removeFriendship(friendId); // Overlay schließen nach erfolgreicher Erstellung
+      await FriendsService.removeFriendship(friendId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Die Anfrage wurde erfolgreich abgelehnt!')),
       );
@@ -76,7 +75,7 @@ class _RequestListTileState extends State<RequestListTile> {
           height: 420,
           child: widget.users.isEmpty ? Center(child: Text("Keine Suchergebnisse")) : ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: widget.users.length, // Hier die Anzahl der Elemente eintragen
+            itemCount: widget.users.length,
             itemBuilder: (context, index) {
               final user = widget.users[index];
               return GestureDetector(
@@ -90,7 +89,7 @@ class _RequestListTileState extends State<RequestListTile> {
                     leading: Icon(Icons.person, size: 40.0),
                     title: Text(user.friendName, style: TextStyle(fontSize: 18.0)),
                     trailing: Row(
-                      mainAxisSize: MainAxisSize.min, // Damit die Row nicht zu breit wird
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         ElevatedButton(
                           onPressed: () {
@@ -98,10 +97,10 @@ class _RequestListTileState extends State<RequestListTile> {
                           },
                           child: Text("Annehmen"),
                         ),
-                        SizedBox(width: 8), // Abstand zwischen den Buttons
+                        SizedBox(width: 8),
                         ElevatedButton(
                           onPressed: () {
-                            _declineFriendship(user.friendId); // Methode zum Ablehnen aufrufen
+                            _declineFriendship(user.friendId);
                           },
                           child: Text("Ablehnen"),
                         ),

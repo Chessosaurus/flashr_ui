@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/filter.dart';
 
 class HeaderSearch extends StatefulWidget {
-  final Function(FilterType) onFilterChanged; // Callback-Funktion hinzufügen
-
+  final Function(FilterType) onFilterChanged;
   const HeaderSearch({Key? key, required this.onFilterChanged}) : super(key: key);
 
   @override

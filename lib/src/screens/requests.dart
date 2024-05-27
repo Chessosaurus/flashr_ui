@@ -1,20 +1,11 @@
-import 'package:flasher_ui/src/screens/profile.dart';
-import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
-import 'package:flasher_ui/src/widgets/header.dart';
-import 'package:flasher_ui/src/widgets/header_friends.dart';
 import 'package:flasher_ui/src/widgets/request_list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flasher_ui/src/widgets/friend_list_tile.dart';
 
 import '../models/friend.dart';
 import '../services/friends_service.dart';
-import '../widgets/category_section.dart';
 import '../widgets/friend_navbar.dart';
 import '../widgets/navbar.dart';
-import '../widgets/friend_list_tile.dart';
-import 'home.dart';
-import 'movie_swipe.dart';
+
 
 class Requests extends StatefulWidget {
   const Requests({super.key});
@@ -40,18 +31,14 @@ class _Requests extends State<Requests> {
     setState(() {
       _selectedIndex = index;
     });
-    // Hier füge deine Navigationslogik hinzu, basierend auf dem ausgewählten Index
     switch (index) {
       case 0:
-      // Navigation zur Startseite
         Navigator.of(context).pushReplacementNamed('/homepage');
         break;
       case 1:
-      // Navigation zu den Favoriten
         Navigator.of(context).pushReplacementNamed('/movieswipe');
         break;
       case 2:
-      // Navigation zum Profil
         Navigator.of(context).pushReplacementNamed('/friends');
         break;
     }
@@ -60,32 +47,14 @@ class _Requests extends State<Requests> {
   int _selectedIndexFriends = 2;
   void _onItemTappedFriends(int index){
     setState(() {
-      _selectedIndexFriends = index; // Aktualisiere den Index der ausgewählten Seite
+      _selectedIndexFriends = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*
-      appBar: AppBar(
-        title: const Text('Streaming App UI'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Suchfunktion
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              // Nutzerprofil
-            },
-          )
-        ],
-      ),
-      */
+
 
       body:  SingleChildScrollView(
         child: Padding(
@@ -110,11 +79,11 @@ class _Requests extends State<Requests> {
                       return Text('Error: ${snapshot.error}');
                     } else {
                       final friends = snapshot.data!;
-                      return SizedBox(  // Wrap ListView.builder in SizedBox
-                        height: MediaQuery.of(context).size.height * 0.5, // Example height
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
                         child: ListView.builder(
-                          shrinkWrap: true,  // Add shrinkWrap
-                          physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: friends.length,
                           itemBuilder: (context, index) {
                             return RequestListTile(users:friends);
@@ -145,9 +114,5 @@ class _Requests extends State<Requests> {
         ],
       ),
     );
-  }
-
-  void _navigateToProfile(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profile');
   }
 }

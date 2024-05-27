@@ -15,12 +15,12 @@ class ResetPassword extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.12), // Dynamically adjust the height
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.12),
                   Image.asset(
                     'assets/logo/flashr_logo.png',
                     width: MediaQuery.of(context).size.height * 0.25,
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.06), // Dynamically adjust the height
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.06),
                   Text(
                     'Passwort zurücksetzen',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -42,14 +42,14 @@ class ResetPassword extends StatelessWidget {
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      // Aktion für den Reset-Button hier einfügen
+                      Navigator.pop(context);
                     },
                     child: Text('Passwort zurücksetzen'),
                   ),
                   SizedBox(height: 30),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pop(context); // Zurück zur vorherigen Seite
+                      Navigator.pop(context);
                     },
                     child: Text(
                       'Zurück zum Login',
