@@ -19,7 +19,13 @@ class _Groups extends State<Groups> {
   @override
   void initState() {
     super.initState();
-    groupsOfUserList = GroupService.getGroupsOfUsers();
+    _refreshGroupList();
+  }
+
+  Future<void> _refreshGroupList() async {
+    setState(() {
+      groupsOfUserList = GroupService.getGroupsOfUsers();
+    });
   }
   int _selectedIndex = 2;
 
@@ -60,6 +66,7 @@ class _Groups extends State<Groups> {
       try {
         await GroupService.createGroup(_groupNameController.text);
         _toggleOverlay();
+        _refreshGroupList();
       } catch (e) {
         print('Fehler beim Erstellen der Gruppe: $e');
       }
