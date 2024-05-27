@@ -113,8 +113,8 @@ class QRCodeGeneratorPage extends StatelessWidget {
                   version: QrVersions.auto,
                   size: 300.0,
                   backgroundColor: Colors.white,
-                  embeddedImageStyle: QrEmbeddedImageStyle(
-                    size: const Size(100, 100),
+                  embeddedImageStyle: const QrEmbeddedImageStyle(
+                    size: Size(100, 100),
                   ),
                 ),
                 const SizedBox(height: 24),

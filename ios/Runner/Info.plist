@@ -46,7 +46,7 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-    <string>QR code scanner needs camera access to scan QR codes</string>
+    <string>QR-Code-Scanner benötigt Zugriff auf die Kamera, um QR-Codes zu scannen</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>QR code scanner needs photos access to get QR code from photo library</string>
     <key>CFBundleURLTypes</key>
