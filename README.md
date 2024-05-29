@@ -1,16 +1,29 @@
 # flasher_ui
 
-A new Flutter project.
+flashr ist eine moderene Cross-Plattform App zum Swipen von Filmen/Serien und sich mit seinen Freunden zu vernetzen.
+
+Dieses Repository beinhaltet die UI der flashr App.
 
 ## Getting Started
+Die Umgebungsvariablen werden benötigt
+Dafür wird der API Key und die URL in folgende Datei geschrieben `assets/.env`.
 
-This project is a starting point for a Flutter application.
+Installieren der Flutter Dependencies:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+cd flutter
+dart pub get
+cd ..
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Ausführen der Flutter der App:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter run
+```
+
+## Verwendete Tools
+
+- [Flutter](https://flutter.dev/) - Verwendet für das User Interface der App
+- [Supabase](https://supabase.com/) - Dient zur Speicherung von Einbettungen und anderen Filmdaten in der Datenbank
+- [TMDB API](https://developer.themoviedb.org/docs) - Dient zum Abrufen von Filmdaten
